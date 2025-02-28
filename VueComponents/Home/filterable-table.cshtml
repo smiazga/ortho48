@@ -1,0 +1,64 @@
+﻿@using System.Web.Mvc.Html;
+@inherits System.Web.Mvc.WebViewPage
+
+<div id="filter-table">
+    <input type="text"
+           placeholder="Filter by department or employee"
+           v-model="filter" />
+    <table>
+        <thead>
+            <tr>
+                <th>Department</th>
+                <th>Employees</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(row, index) in rows" :key="`employee-${index}`">
+                <td v-html="highlightMatches(row.department)"></td>
+                <td v-html="highlightMatches([...row.employees].sort().join(', '))"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    const fTable = Vue.createApp({
+        data() {
+            return {
+                filter: '',
+                rows: [
+                    { department: 'Accounting', employees: ['Bradley', 'Jones', 'Alvarado'] },
+                    { department: 'Human Resources', employees: ['Juarez', 'Banks', 'Smith'] },
+                    { department: 'Production', employees: ['Sweeney', 'Bartlett', 'Singh'] },
+                    { department: 'Research and Development', employees: ['Lambert', 'Williamson', 'Smith'] },
+                    { department: 'Sales and Marketing', employees: ['Prince', 'Townsend', 'Jones'] }
+                ]
+            }
+        },
+        computed: {
+            filteredRows() {
+                return this.rows.filter(row => {
+                    const employees = row.employees.toString().toLowerCase();
+                    const department = row.department.toLowerCase();
+                    const searchTerm = this.filter.toLowerCase();
+
+                    return department.includes(searchTerm) ||
+                        employees.includes(searchTerm);
+                });
+            }
+        },
+        methods: {
+            highlightMatches(text) {
+                const matchExists = text.toLowerCase().includes(this.filter.toLowerCase());
+                if (!matchExists) return text;
+
+                const re = new RegExp(this.filter, 'ig');
+                return text.replace(re, matchedText => `<strong>${matchedText}</strong>`);
+            }
+        }
+    });
+    fTable.mount('#filter-table');
+</script>
+
+@*https://hibbard.eu/filterable-table-vuejs/*@

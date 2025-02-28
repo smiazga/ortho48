@@ -1,0 +1,103 @@
+@using Newtonsoft.Json;
+@using System.Web.Mvc.Html;
+
+@using System.Web.Mvc.Html;
+@inherits System.Web.Mvc.WebViewPage
+
+<script src="~/Scripts/vue3.js"></script>
+<script src="~/Scripts/fetchwrapper.js"></script>
+
+@Html.Partial("~/VueComponents/Cruds/CreateEditCrudForm.cshtml")
+
+<div id="cruds">
+    @*     <div class="container">
+            <div> Add New </div>
+            <table v-for="c in Cruds.CrudList">
+                {{c}}
+                <tr>
+                    <th>Id</th>
+                    <th>Text</th>
+                    <th>User Id</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td>{{ c.Id }}</td>
+                    <td>{{ c.Text }}</td>
+                    <td>{{ c.UserId }}</td>
+                    <td> Edit Delete </td>
+                </tr>
+            </table>
+        </div> *@
+
+
+    <button @@click="openCreateModal">Create Item</button>
+    <ul>
+        <li v-for="(item, index) in items.CrudsList.CrudList" :key="index">
+            {{ item.Id }} - {{ item.Text }}
+            <button @@click="openEditModal(item, index)">Edit</button>
+        </li>
+    </ul>
+    <Modal :is-visible="isModalVisible"
+           :is-edit-mode="isEditMode"
+           :item-data="currentItem"
+           @@close="closeModal"
+           @@submit="handleFormSubmit" />
+
+</div>
+
+<script>
+    const cruds = Vue.createApp({
+        data() {
+            return {
+                //Cruds:[]
+                items: [],
+                isModalVisible: false,
+                isEditMode: false,
+                currentItem: {},
+                currentIndex: null,
+                crudUrl: '/sfapi/cruds',
+                isLoading: false
+
+            }
+        },
+        methods: {
+          openCreateModal() {
+            this.isEditMode = false;
+            this.currentItem = { Id: '', Text: '' };
+            this.isModalVisible = true;
+          },
+          openEditModal(item, index) {
+            this.isEditMode = true;
+            this.currentItem = { ...item };
+            this.currentIndex = index;
+            this.isModalVisible = true;
+          },
+          closeModal() {
+            this.isModalVisible = false;
+          },
+          async handleFormSubmit(formData) {
+              if (this.isEditMode) {
+                //seems to be hitting updatefetchdata this twice, so stop with isloading
+                if (this.isLoading) return;
+                this.isLoading = true;
+                try {
+                    var update = await updateFetchData(this.crudUrl, formData.Id, formData);
+                    console.log("update", update);
+                    //this.$set(this.items, this.currentIndex, formData); not working
+                } finally {
+                    this.isLoading = false;
+                }
+
+            } else {
+              this.items.push(formData);
+            }
+            this.closeModal();
+          }
+        },
+        created: function() {
+            this.items = @Html.Raw(JsonConvert.SerializeObject(Model));
+        }
+    });
+    cruds.component("Modal",createEditForm )
+    cruds.mount('#cruds');
+</script>

@@ -1,0 +1,87 @@
+@using System.Web.Mvc.Html;
+@inherits System.Web.Mvc.WebViewPage
+
+<script type="text/x-template" id="createedit-form-template">
+    <div v-if="isVisible" class="modal-overlayX">
+        <div class="modalX">
+            <h2>{{ isEditMode ? 'Edit Item' : 'Create Item' }}</h2>
+            <form @@submit.prevent="handleSubmit">
+                <div>
+                    <label for="name">Id:</label>
+                    <input type="number" id="name3" v-model="formData.Id" required />
+                </div>
+                <div>
+                    <label for="name">Text:</label>
+                    <input type="text" id="name" v-model="formData.Text" required />
+                </div>
+                <div>
+                    <label for="description">User Id:</label>
+                    <input type="number" id="name2" v-model="formData.UserId" required />
+                </div>
+                <button type="submit">{{ isEditMode ? 'Update' : 'Create' }}</button>
+                <button type="button" @@click="closeModal">Cancel</button>
+            </form>
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+    const createEditForm = {
+        template: '#createedit-form-template',
+        props: {
+            isVisible: {
+                type: Boolean,
+                required: true
+            },
+            isEditMode: {
+                type: Boolean,
+                default: false
+            },
+            itemData: {
+                type: Object,
+                default: () => ({ Id: 0, Text: '', UserId: 0 })
+            }
+        },
+        data() {
+            return {
+                formData: { ...this.itemData }
+            };
+        },
+        methods: {
+            handleSubmit() {
+                this.$emit('submit', this.formData);
+                this.closeModal();
+            },
+            closeModal() {
+                this.$emit('close');
+            }
+        },
+        watch: {
+            itemData(newData) {
+                this.formData = { ...newData };
+            }
+        }
+    };
+
+</script>
+
+<style scoped>
+    .modal-overlayX {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modalX {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 300px;
+    }
+</style>
