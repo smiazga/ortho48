@@ -1,0 +1,55 @@
+<script type="text/x-template" id="product-card-template">
+    <div class="product-wrapper justify">
+        <div class="product-item">
+            <div class="product-item-header mb-2">
+                <img :src="product.ImageUrl" alt="" width="190" height="190" />
+            </div>
+            <div class="product-info-bar">
+                <div class="divider d-flex justify-content-between pt-2">
+                    <div class="product-item-caption">
+                        <a :href="'product-details' + product.ProductUrl">{{ product.Name }}</a>
+                        <p class="product-item-category">{{ product.MainCategories }}</p>
+                    </div>
+                    @*                     <span v-if="isLoggedIn" class="product-item-caption-price">{{ toCurrency(product.Price) }}</span>
+                        <div v-else class="product-item-pricing-restriction-wrap">
+                            <a class="product-item-pricing-restriction-link">Login</a>
+                        </div> *@
+                    <div class="product-item-pricing-restriction-wrap">
+                        <a class="product-item-pricing-restriction-link" @@click="addToCart(product.Sku)">Add</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+    const productCard = {
+    template:'#product-card-template',
+    props: {
+        product: {
+            type: Object,
+            required: true
+        },
+        isLoggedIn: false,
+    },
+    data() {
+        return {
+            test: ''
+        }
+    },
+    methods : {
+
+        async addToCart(sku) {
+            //var status = await postFetchData("/sfapi/sftest/addcart",{Sku:sku,VariantSku:sku,Quantity:1});
+            var status = "ok";
+        console.log("result add cart",status);
+        this.$emit('resultAddCart',status);
+
+        },
+    },
+    mounted() {
+        console.log("product test card mounted");
+    }
+    }
+</script>

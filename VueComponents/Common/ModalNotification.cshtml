@@ -1,0 +1,66 @@
+<script type="text/x-template" id="modal-notification-template">
+    <div class="modal" id="notificationModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header flex-column align-items-center">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body d-flex flex-column align-items-center justify-content-center">
+                    <h5 :class="notification.color">{{notification.subject}}</h5>
+                    <div>{{notification.message}}</div>
+                    <slot />
+                    <div class="mt-4 mb-2">
+                        <button class="general-button" data-dismiss="modal" @@click="addModal()">
+                            Ok
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border:none;padding:.25rem;height:39px;">
+                    <slot name="footer"></slot>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+    const modalNotification = {
+    template:'#modal-notification-template',
+    data() {
+        return {
+                notification: {
+                    message: '',
+                    subject: '',
+                    color: ''
+                },
+        }
+    },
+    methods: {
+        notificationDisplay(messageType, message) {
+                var displayMessage = 'Please try again or contact support at 1.800.332.2351';
+                if (typeof (message) != 'undefined' && message != null && message.length != 0 && message != '') {
+                    displayMessage = message;
+                }
+                switch (messageType) {
+                    case "error":
+                        this.notification.message = displayMessage;
+                        this.notification.subject = "Error Notification";
+                        this.notification.color = "text-danger";
+                        break;
+                    case "info":
+                        this.notification.message = displayMessage;
+                        this.notification.subject = "Note";
+                        this.notification.color = "text-info";
+                        break;
+                }
+                $('#notificationModal').modal({ backdrop: 'static', keyboard: false }, 'show');
+        },
+        addModal() {
+            this.$emit('addModalResult','ok');
+        }
+    }
+
+    }
+</script>

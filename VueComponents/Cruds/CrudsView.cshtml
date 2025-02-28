@@ -1,11 +1,8 @@
 @using Newtonsoft.Json;
-@using System.Web.Mvc.Html;
 
-@using System.Web.Mvc.Html;
-@inherits System.Web.Mvc.WebViewPage
-
-<script src="~/Scripts/vue3.js"></script>
-<script src="~/Scripts/fetchwrapper.js"></script>
+@model ortho48.ViewModels.CrudsViewModel
+@*<script src="~/Scripts/vue3.js"></script>
+    <script src="~/Scripts/fetchwrapper.js"></script>*@
 
 @Html.Partial("~/VueComponents/Cruds/CreateEditCrudForm.cshtml")
 
@@ -32,7 +29,7 @@
 
     <button @@click="openCreateModal">Create Item</button>
     <ul>
-        <li v-for="(item, index) in items.CrudsList.CrudList" :key="index">
+        <li v-for="(item, index) in items" :key="index">
             {{ item.Id }} - {{ item.Text }}
             <button @@click="openEditModal(item, index)">Edit</button>
         </li>
@@ -91,11 +88,11 @@
             } else {
               this.items.push(formData);
             }
-            this.closeModal();
+            this.closeModal()
           }
         },
         created: function() {
-            this.items = @Html.Raw(JsonConvert.SerializeObject(Model));
+            this.items = @Html.Raw(JsonConvert.SerializeObject(Model.CrudsList.CrudList));
         }
     });
     cruds.component("Modal",createEditForm )
