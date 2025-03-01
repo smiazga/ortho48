@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
-    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
     <link href="~/Content/main.css" rel="stylesheet"/>
     <script src="~/Scripts/jquery-3.6.0.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
@@ -21,6 +21,9 @@
                     <span class="icon-bar"></span>
                 </button>
                 @Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Cruds", "Index", "Cruds", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Products", "Index", "Products", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Manage Products", "Index", "ManageProducts", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
