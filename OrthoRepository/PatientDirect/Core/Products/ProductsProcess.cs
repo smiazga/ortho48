@@ -24,7 +24,6 @@ namespace ortho48.OrthoRepository.PatientDirect.Core.Products
                     new FilterValue() { Name = "Essential Fatty Acids" },
                     new FilterValue() { Name = "Essential Health" },
                     new FilterValue() { Name = "Essential Minerals" },
-                    new FilterValue() { Name = "Essential Fatty Acids" },
                     new FilterValue() { Name = "Essential Nutrition" },
                     new FilterValue() { Name = "Essential Vitamins" },
                     new FilterValue() { Name = "Gastrointestinal Health" },
@@ -90,6 +89,11 @@ namespace ortho48.OrthoRepository.PatientDirect.Core.Products
             }
         };
 
+        private static readonly List<int> AllVisibileItems = new List<int>()
+        {
+            121
+        };
+
         public List<Product> GetAllProducts()
         {
             return AllProducts;
@@ -98,6 +102,11 @@ namespace ortho48.OrthoRepository.PatientDirect.Core.Products
         public List<Filter> GetAllFilters()
         {
             return AllFilters;
+        }
+
+        public List<int> GetVisibleItems()
+        {
+            return AllVisibileItems;
         }
     }
 }

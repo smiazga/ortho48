@@ -1,9 +1,6 @@
-﻿using ortho48.OrthoRepository.PatientDirect.Core.Products;
-using ortho48.OrthoRepository.Services.Managers;
+﻿using ortho48.OrthoRepository.Services.Managers;
 using ortho48.ViewModels;
-using System.Collections.Generic;
 using System.Web.Mvc;
-using Filter = ortho48.OrthoRepository.PatientDirect.Core.Products.Filter;
 
 namespace ortho48.Controllers
 {
@@ -17,10 +14,9 @@ namespace ortho48.Controllers
             productsViewModel.Message = Message;
 
             ProductsManager productsManager = new ProductsManager();
-            List<Product> productsList = productsManager.GetAllProducts();
-            List<Filter> filtersList = productsManager.GetAllFilters();
-            productsViewModel.FiltersList = filtersList;
-            productsViewModel.ProductsList = productsList;
+            productsViewModel.ProductsList = productsManager.GetAllProducts();
+            productsViewModel.FiltersList = productsManager.GetAllFilters();
+            productsViewModel.VisibleItemsList = productsManager.GetAllVisibleItems();
 
             return View(TemplateName, productsViewModel);
         }

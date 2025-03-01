@@ -19,5 +19,12 @@ namespace ortho48.OrthoRepository.Services.Managers
             return filtersList;
         }
 
+        public List<int> GetAllVisibleItems()
+        {
+            ProductsProcess productsProcess = new ProductsProcess();
+            var visibleItems = productsProcess.GetVisibleItems();
+            return visibleItems;
+        }
+
     }
 }

@@ -35,6 +35,18 @@
                         <option value="PriceASC">Sort By Price (Low to High)</option>
                     </select>
                 </div>
+                <div>
+                    <label>
+                        <input type="checkbox" id="showVisibile" value="Visible"
+                               v-model="visibility" />
+                        Visible
+                    </label>
+                    <label>
+                        <input type="checkbox" id="showVisibile" value="Hidden"
+                               v-model="visibility" />
+                        Hidden
+                    </label>
+                </div>
             </div>
         </div>
 
@@ -79,11 +91,12 @@
                 <div>count:{{ selectedCount }}</div>
             </div>
             <div class="products-container">
-                <template v-for="prod in this.filterProducts" :key="prod.Id"> 
+                <template v-for="prod in filteredAndSortedProducts" :key="prod.Id"> 
                     <div>
-                        <input type="checkbox" v-model="selectedItems" :value="prod.Id" />
-                        <div v-if="selectedItems.includes(prod.Id)">Visible</div>
-                        <div v-else>Hidden</div>
+                        <input type="checkbox" :id="'select-' + prod.Id" :value="prod.Id"  v-model="selectedItems" />
+                        @*<div v-if="selectedItems.includes(prod.Id)">Visible</div>
+                        <div v-else>Hidden</div>*@
+                        <div :id="'text-'+ prod.Id">{{ showSelectedItem(prod.Id) }}</div>
                     </div>
                     <manage-product-card :product="prod" />
                 </template>
@@ -101,20 +114,19 @@
             return {
                 Products:[],
                 FiltersData:[],
-                filteredResults: [],
-                filters:[],
+                filters: [],
+                visibility:[],
                 ingredientSearch:'',
                 productFilters: [],
                 searchTerm: '',
                 selectedItems: [],
+                currentSort: 'NameASC',
+                currentSortDir: 'ASC'
             }
         },
         computed: {
             allSelected() {
-                return this.selectedItems.length === this.filteredResults.length;
-            },
-            filterProducts() {
-                return this.getFilterProducts();
+                return this.selectedItems.length === this.Products.length;
             },
             setProductFilters() {
                 this.productFilters.push({label:'Category',category: "MainCategories"});
@@ -125,8 +137,29 @@
             selectedCount() {
                 return this.selectedItems.length;
             },
+            filteredAndSortedProducts() {
+                return this.Products.filter(product => {
+                    const matchesFilter = this.filters.every((f) => product.AllCategories.includes(f));
+                    const matchesSearch = product.Name.toLowerCase().includes(this.searchTerm.toLowerCase());
+                    if (this.visibility.length > 0) {
+                        let visibilityStatus = this.selectedItems.includes(product.Id) ? "Visible" : "Hidden";
+                        const matchesVisibility = this.visibility.some((f) => visibilityStatus.includes(f));
+                        return matchesFilter && matchesSearch && matchesVisibility;
+                    }
+                    return matchesFilter && matchesSearch;
+                }).sort((a, b) => {
+                    let modifier = 1;
+                    if (this.currentSortDir === 'DESC') modifier = -1;
+                    if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
+                    if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
+                    return 0;
+                });
+            },
         },
         methods: {
+            showSelectedItem(productId) {
+                return this.selectedItems.includes(productId) ? "Visible" : "Hidden"; 
+            },
             removeFilter(item){
                 let itemIndex = this.filters.findIndex(c => c == item);
                 this.filters.splice(itemIndex, 1);
@@ -134,64 +167,36 @@
             clearFilters() {
                 this.filters = [];
             },
-            sortProductOrder(event) {
-                var sortName = event.target.value;
-                if (sortName == null) {
-                    return;
-                }
-                if (sortName == 'NameASC') {
-                    return this.filteredResults.sort((a, b) => {
-                        return a.Name > b.Name ? 1 : -1;
-                    })
-                }
-                else if (sortName == 'NameDESC') {
-                    return this.filteredResults.sort((a, b) => {
-                        return a.Name > b.Name ? -1 : 1;
-                    })
-                }
-                else if (sortName == 'PriceASC') {
-                    return this.filteredResults.sort((a, b) => {
-                        return a.Price - b.Price;
-                    })
-                }
-                else if (sortName == 'PriceDESC') {
-                    return this.filteredResults.sort((a, b) => {
-                        return b.Price - a.Price;
-                    })
-                }
-                else {
-                    return this.filteredResults;
-                }
+            sortProductOrder: function (s) {
+                let sortName = s.target.value;
+                let sortDir = sortName.includes('ASC') ? 'ASC' : 'DESC';
+                sortName = sortName.substring(0, sortName.indexOf(sortDir));
+                this.currentSortDir = sortDir;
+                this.currentSort = sortName;
             },
             toggleSelectAll() {
                 if (this.allSelected) {
                     this.selectedItems = [];
                 } else {
-                    this.selectedItems = this.filteredResults.map(item => item.Id);
+                    this.selectedItems = this.Products.map(item => item.Id);
                 }
             },
-            getFilterProducts() {
-               if (this.filters.length > 0)
-                {
-                   this.filteredResults = this.Products.filter((p) => this.filters.every((f) => p.AllCategories.includes(f)));
-                }
-                else {
-                   this.filteredResults = this.Products;
-                }
-
-                if (this.searchTerm != '') {
-                    const searchTerm = this.searchTerm.toLowerCase();
-                     return this.filteredResults.filter((p) => p.Name.toLowerCase().includes(searchTerm));
-                }
-                return this.filteredResults;
-            },
-
-
-
         },
         created: function() {
             this.Products = @Html.Raw(JsonConvert.SerializeObject(Model.ProductsList));
             this.FiltersData = @Html.Raw(JsonConvert.SerializeObject(Model.FiltersList));
+            this.selectedItems = @Html.Raw(JsonConvert.SerializeObject(Model.VisibleItemsList));
+        },
+        mounted: function () {
+            if (this.selectedItems != null) {
+                this.selectedItems.forEach((item) => {
+                    const checkbox = document.getElementById('select-' + item);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                        this.showSelectedItem(item);
+                    }
+                });
+            }
         }
     });
     products.component("manage-product-card", manageProductCard);
