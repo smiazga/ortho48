@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace ortho48.OrthoRepository.PatientDirect.Core.Products
 {
@@ -89,10 +90,7 @@ namespace ortho48.OrthoRepository.PatientDirect.Core.Products
             }
         };
 
-        private static readonly List<int> AllVisibileItems = new List<int>()
-        {
-            121
-        };
+        private static readonly string SelectItems = "121|137|";
 
         public List<Product> GetAllProducts()
         {
@@ -104,9 +102,10 @@ namespace ortho48.OrthoRepository.PatientDirect.Core.Products
             return AllFilters;
         }
 
-        public List<int> GetVisibleItems()
+        public List<int> GetSelectItems()
         {
-            return AllVisibileItems;
+            var result = SelectItems.Split('|').Where(x => int.TryParse(x, out _)).Select(int.Parse).ToList();
+            return result;
         }
     }
 }

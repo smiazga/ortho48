@@ -1,5 +1,6 @@
 @using Newtonsoft.Json;
 
+@Html.Partial("~/VueComponents/Common/ModalNotification.cshtml")
 @Html.Partial("~/VueComponents/ManageProducts/ManageProductCard.cshtml")
 
 <div id="products">
@@ -27,25 +28,59 @@
                     Clear all
                     filters
                 </button>
-                <div class="products-top-bar-info-dropdown">
-                    <select class="products-top-bar-info-dropdown-wrapper" @@change="sortProductOrder($event)">
-                        <option value="NameASC">Sort By Name</option>
-                        <option value="NameDESC">Sort By Name Descending</option>
-                        <option value="PriceDESC">Sort By Price (High to Low)</option>
-                        <option value="PriceASC">Sort By Price (Low to High)</option>
-                    </select>
-                </div>
+                @*<div class="products-top-bar-info-dropdown">
+                        <select class="products-top-bar-info-dropdown-wrapper" @@change="sortProductOrder($event)">
+                            <option value="NameASC">Sort By Name</option>
+                            <option value="NameDESC">Sort By Name Descending</option>
+                            <option value="PriceDESC">Sort By Price (High to Low)</option>
+                            <option value="PriceASC">Sort By Price (Low to High)</option>
+                        </select>
+                    </div>*@
+
                 <div>
-                    <label>
-                        <input type="checkbox" id="showVisibile" value="Visible"
-                               v-model="visibility" />
-                        Visible
-                    </label>
-                    <label>
-                        <input type="checkbox" id="showVisibile" value="Hidden"
-                               v-model="visibility" />
-                        Hidden
-                    </label>
+                    <button class="filter-btn shadow w-100" type="button" data-toggle="dropdown" aria-expanded="false" v-on:click="toggleDropdown($event)">
+                        Sort By
+                        <i class="material-symbols-outlined" name="dropdownArrowIcon">expand_more</i>
+                    </button>
+                    <div class="dropdown-menu filter-dropdown shadowed">
+                        <div class="mx-2">
+                            <div><a href="#" @@click="sortProductOrder('NameASC')">Name (A-Z)</a></div>
+                            <div><a href="#" @@click="sortProductOrder('NameDESC')">Name (Z-A)</a></div>
+                            <div><a href="#" @@click="sortProductOrder('PriceDESC')">Price (Low - high)</a></div>
+                            <div><a href="#" @@click="sortProductOrder('PriceASC')">Price (High - low)</a></div>
+                        </div>
+                    </div>
+                </div>
+
+
+                @*<div>
+                        <label>
+                            <input type="checkbox" id="showVisibile" value="Visible"
+                                   v-model="visibility" />
+                            Visible
+                        </label>
+                        <label>
+                            <input type="checkbox" id="showVisibile" value="Hidden"
+                                   v-model="visibility" />
+                            Hidden
+                        </label>
+                    </div>*@
+                @*see op nav bar if want to do hover instead, below follows op provider dashboard filter*@
+                <div>
+                    <button class="filter-btn shadow w-100" type="button" data-toggle="dropdown" aria-expanded="false" v-on:click="toggleDropdown($event)">
+                        Filter By
+                        <i class="material-symbols-outlined" name="dropdownArrowIcon">expand_more</i>
+                    </button>
+                    <div class="dropdown-menu filter-dropdown shadowed">
+                        <div class="mx-2">
+                            <input class="mr-2" type="checkbox" id="visible_checkbox" value="Visible" v-model="visibility" />
+                            <label for="visible_checkbox" class="mr-2">Visible</label>
+                        </div>
+                        <div class="mx-2">
+                            <input class="mr-2" type="checkbox" id="hidden_checkbox" value="Hidden" v-model="visibility" />
+                            <label for="hidden_checkbox" class="mr-2">Hidden</label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -91,11 +126,11 @@
                 <div>count:{{ selectedCount }}</div>
             </div>
             <div class="products-container">
-                <template v-for="prod in filteredAndSortedProducts" :key="prod.Id"> 
+                <template v-for="prod in filteredAndSortedProducts" :key="prod.Id">
                     <div>
-                        <input type="checkbox" :id="'select-' + prod.Id" :value="prod.Id"  v-model="selectedItems" />
+                        <input type="checkbox" :id="'select-' + prod.Id" :value="prod.Id" v-model="selectedItems" @@click="checkVisiblity($event,prod.Id)" />
                         @*<div v-if="selectedItems.includes(prod.Id)">Visible</div>
-                        <div v-else>Hidden</div>*@
+                            <div v-else>Hidden</div>*@
                         <div :id="'text-'+ prod.Id">{{ showSelectedItem(prod.Id) }}</div>
                     </div>
                     <manage-product-card :product="prod" />
@@ -104,7 +139,10 @@
         </div>
     </div>
 
-
+    <div>
+        <modal-notification ref="modalNotificationRef">
+        </modal-notification>
+    </div>
 
 </div>
 
@@ -115,7 +153,7 @@
                 Products:[],
                 FiltersData:[],
                 filters: [],
-                visibility:[],
+                visibility:['Visible','Hidden'],
                 ingredientSearch:'',
                 productFilters: [],
                 searchTerm: '',
@@ -141,12 +179,14 @@
                 return this.Products.filter(product => {
                     const matchesFilter = this.filters.every((f) => product.AllCategories.includes(f));
                     const matchesSearch = product.Name.toLowerCase().includes(this.searchTerm.toLowerCase());
-                    if (this.visibility.length > 0) {
-                        let visibilityStatus = this.selectedItems.includes(product.Id) ? "Visible" : "Hidden";
-                        const matchesVisibility = this.visibility.some((f) => visibilityStatus.includes(f));
-                        return matchesFilter && matchesSearch && matchesVisibility;
-                    }
-                    return matchesFilter && matchesSearch;
+                    //if (this.visibility.length > 0) {
+                    //    let visibilityStatus = this.selectedItems.includes(product.Id) ? "Visible" : "Hidden";
+                    //    const matchesVisibility = this.visibility.some((f) => visibilityStatus.includes(f));
+                    //    return matchesFilter && matchesSearch && matchesVisibility;
+                    //}
+                    let visibilityStatus = this.selectedItems.includes(product.Id) ? "Visible" : "Hidden";
+                    const matchesVisibility = this.visibility.some((f) => visibilityStatus.includes(f));
+                    return matchesFilter && matchesSearch && matchesVisibility;
                 }).sort((a, b) => {
                     let modifier = 1;
                     if (this.currentSortDir === 'DESC') modifier = -1;
@@ -158,7 +198,7 @@
         },
         methods: {
             showSelectedItem(productId) {
-                return this.selectedItems.includes(productId) ? "Visible" : "Hidden"; 
+                return this.selectedItems.includes(productId) ? "Visible" : "Hidden";
             },
             removeFilter(item){
                 let itemIndex = this.filters.findIndex(c => c == item);
@@ -168,24 +208,101 @@
                 this.filters = [];
             },
             sortProductOrder: function (s) {
-                let sortName = s.target.value;
+                let sortName = s;
                 let sortDir = sortName.includes('ASC') ? 'ASC' : 'DESC';
                 sortName = sortName.substring(0, sortName.indexOf(sortDir));
                 this.currentSortDir = sortDir;
                 this.currentSort = sortName;
             },
-            toggleSelectAll() {
+            async toggleSelectAll() {
                 if (this.allSelected) {
                     this.selectedItems = [];
                 } else {
                     this.selectedItems = this.Products.map(item => item.Id);
                 }
+                var result = await postFetchData('/sfapi/products/selectitems', this.selectedItems);
+
+                if (result.Status != "success") {
+                    this.showNotificationModal(result);
+                    console.log("Error: " + result.Message);
+                }
+
+                //try {
+                //    if (result.Status != "success") {
+                //        this.showNotificationModal(result);
+                //        console.log("Error: " + result.Message);
+                //    }
+                //} catch (e) {
+                //    this.showNotificationModal(result);
+                //    console.log("Error: " + result.Message);
+                //}
             },
+            toggleDropdown(event) {
+                this.flipArrow(event.target);
+            },
+            flipArrow(element) {
+                if (element.tagName != 'I') {
+                    element = $(element).find("i[name=dropdownArrowIcon]");
+                }
+
+                if ($(element).hasClass("flipped")) {
+                    $(element).removeClass("flipped");
+                } else {
+                    $(element).addClass("flipped");
+                }
+            },
+            async checkVisiblity($event,productId) {
+                //let index = this.selectedItems.indexOf(productId);
+                //if (index > -1) {
+                //    this.selectedItems.splice(index, 1);
+                //} else {
+                //    this.selectedItems.push(productId);
+                //}
+                var checkbox = $event.target;
+                var isChecked = checkbox.checked;
+                var prodId = productId;
+                var result;
+                if (isChecked) {
+                    var result = await postFetchData('/sfapi/products/selectitem', prodId);
+                } else if (isChecked == false) {
+                    var result = await deleteFetch('/sfapi/products/selectitem', prodId);
+                }
+
+                 if (result.Status != "success") {
+                        this.showNotificationModal(result);
+                        console.log("Error: " + result.Message);
+                 }
+
+                //try {
+                //    if (result.Status != "success") {
+                //        this.showNotificationModal(result);
+                //        console.log("Error: " + result.Message);
+                //    }
+                //} catch (e) {
+                //    this.showNotificationModal(result);
+                //    console.log("Error: " + result.Message);
+                //}
+
+            },
+            showNotificationModal(resultNotification) {
+                const modalNotificationComponent = this.$refs.modalNotificationRef;
+                if (modalNotificationComponent) {
+                    if (resultNotification == undefined) {
+                        modalNotificationComponent.notificationDisplay('error', '');
+                    }
+                    else if (resultNotification.Status == "failed") {
+                        modalNotificationComponent.notificationDisplay('error', resultNotification.Message);
+                    }
+                    else if (resultNotification.Status == "success") {
+                        modalNotificationComponent.notificationDisplay('info', resultNotification.Message);
+                    }
+                }
+            }
         },
         created: function() {
             this.Products = @Html.Raw(JsonConvert.SerializeObject(Model.ProductsList));
             this.FiltersData = @Html.Raw(JsonConvert.SerializeObject(Model.FiltersList));
-            this.selectedItems = @Html.Raw(JsonConvert.SerializeObject(Model.VisibleItemsList));
+            this.selectedItems = @Html.Raw(JsonConvert.SerializeObject(Model.SelectItemsList));
         },
         mounted: function () {
             if (this.selectedItems != null) {
@@ -200,5 +317,6 @@
         }
     });
     products.component("manage-product-card", manageProductCard);
+    products.component("modal-notification", modalNotification)
     products.mount('#products');
 </script>

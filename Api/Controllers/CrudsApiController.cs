@@ -46,6 +46,7 @@ namespace ortho48.Api.Controllers
         //}
 
         [HttpGet]
+        [Route("")]
         public IHttpActionResult GetAllCruds()
         {
             CrudsList crudsList = new CrudsList();

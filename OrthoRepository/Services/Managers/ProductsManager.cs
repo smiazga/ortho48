@@ -1,4 +1,6 @@
-﻿using ortho48.OrthoRepository.PatientDirect.Core.Products;
+﻿using ortho48.OrthoDTO.Responses;
+using ortho48.OrthoRepository.PatientDirect.Core.Products;
+using System;
 using System.Collections.Generic;
 
 namespace ortho48.OrthoRepository.Services.Managers
@@ -19,11 +21,80 @@ namespace ortho48.OrthoRepository.Services.Managers
             return filtersList;
         }
 
-        public List<int> GetAllVisibleItems()
+        public List<int> GetAllSelectItems()
         {
             ProductsProcess productsProcess = new ProductsProcess();
-            var visibleItems = productsProcess.GetVisibleItems();
+            var visibleItems = productsProcess.GetSelectItems();
             return visibleItems;
+        }
+
+        public ResultDTO AddSelectedItem(int id)
+        {
+            ResultDTO resultDTO = new ResultDTO();
+            try
+            {
+
+                resultDTO.Status = "success";
+                return resultDTO;
+            }
+            catch (Exception ex)
+            {
+                resultDTO.Status = "failed";
+                resultDTO.Error = ex.Message.ToString();
+                return resultDTO;
+            }
+        }
+
+        public ResultDTO AddSelectedItems(List<int> ids)
+        {
+            ResultDTO resultDTO = new ResultDTO();
+            try
+            {
+
+                resultDTO.Status = "success";
+                return resultDTO;
+            }
+            catch (Exception ex)
+            {
+                resultDTO.Status = "failed";
+                resultDTO.Error = ex.Message.ToString();
+                return resultDTO;
+            }
+        }
+
+        public ResultDTO RemoveSelectedItems(List<int> ids)
+        {
+            ResultDTO resultDTO = new ResultDTO();
+            try
+            {
+
+                resultDTO.Status = "success";
+                return resultDTO;
+            }
+            catch (Exception ex)
+            {
+                resultDTO.Status = "failed";
+                resultDTO.Error = ex.Message.ToString();
+                return resultDTO;
+            }
+        }
+
+        public ResultDTO DeleteSelectedItem(int Id)
+        {
+            ResultDTO resultDTO = new ResultDTO();
+            try
+            {
+
+
+                resultDTO.Status = "success";
+                return resultDTO;
+            }
+            catch (Exception ex)
+            {
+                resultDTO.Status = "failed";
+                resultDTO.Error = ex.Message.ToString();
+                return resultDTO;
+            }
         }
 
     }
