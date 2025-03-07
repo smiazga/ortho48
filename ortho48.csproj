@@ -122,6 +122,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\CrudsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ManagePatientsController.cs" />
     <Compile Include="Controllers\ManageProductsController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -136,15 +137,30 @@
     <Compile Include="OrthoRepository\PatientDirect\Core\Crud\Crud.cs" />
     <Compile Include="OrthoRepository\PatientDirect\Core\Crud\CrudProcess.cs" />
     <Compile Include="OrthoRepository\PatientDirect\Core\Crud\CrudsList.cs" />
+    <Compile Include="OrthoRepository\PatientDirect\Core\Orders\Order.cs" />
+    <Compile Include="OrthoRepository\PatientDirect\Core\Orders\OrderLine.cs" />
+    <Compile Include="OrthoRepository\PatientDirect\Core\Orders\OrderProcess.cs" />
+    <Compile Include="OrthoRepository\PatientDirect\Core\Orders\Subscription.cs" />
+    <Compile Include="OrthoRepository\PatientDirect\Core\Patients\PatientDetails.cs" />
+    <Compile Include="OrthoRepository\PatientDirect\Core\Patients\PatientInfo.cs" />
+    <Compile Include="OrthoRepository\PatientDirect\Core\Patients\PatientProcess.cs" />
     <Compile Include="OrthoRepository\PatientDirect\Core\Products\Filter.cs" />
     <Compile Include="OrthoRepository\PatientDirect\Core\Products\Product.cs" />
     <Compile Include="OrthoRepository\PatientDirect\Core\Products\ProductsProcess.cs" />
     <Compile Include="OrthoRepository\PatientDirect\Core\Result.cs" />
     <Compile Include="OrthoRepository\Services\Managers\CrudManager.cs" />
+    <Compile Include="OrthoRepository\Services\Managers\PatientsManager.cs" />
     <Compile Include="OrthoRepository\Services\Managers\ProductsManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\CrudsViewModel.cs" />
+    <Compile Include="ViewModels\ManagePatientsViewModel.cs" />
     <Compile Include="ViewModels\ProductsViewModel.cs" />
+    <Content Include="VueComponents\Home\vuelidate-form.cshtml" />
+    <Content Include="VueComponents\Home\vuelidate-form2.cshtml" />
+    <Content Include="json.json" />
+    <None Include="VueComponents\ManagePatients\EditPatientDetails.cshtml" />
+    <None Include="VueComponents\ManagePatients\PatientOrders.cshtml" />
+    <None Include="VueComponents\ManagePatients\PatientSubscriptions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -165,6 +181,10 @@
     <Content Include="VueComponents\Products\ProductsView.cshtml" />
     <Content Include="Views\Products\Index.cshtml" />
     <Content Include="VueComponents\Products\ProductCard.cshtml" />
+    <Content Include="Views\ManagePatients\Index.cshtml" />
+    <Content Include="VueComponents\ManagePatients\ManagePatientsView.cshtml" />
+    <Content Include="VueComponents\ManagePatients\CreatePatient.cshtml" />
+    <Content Include="VueComponents\ManagePatients\PatientDetails.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

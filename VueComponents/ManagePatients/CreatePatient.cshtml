@@ -1,0 +1,53 @@
+<script type="text/x-template" id="patient-create-template">
+    <div class="modal" id="createPatientModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header flex-column align-items-center">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body d-flex flex-column align-items-center justify-content-center">
+                    <h5 class="mb-4 text-center">Create patient</h5>
+                    <h3 class="mb-4 text-center">Patient(s) will receive an email inviatation to register</h3>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+    const createPatientModal = {
+        template: '#patient-create-template',
+        //props: {
+        //    isVisible: {
+        //        type: Boolean,
+        //        required: true
+        //    }
+        //},
+        data() {
+            return {
+                patient: {
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    phone: '',
+                    address: '',
+                    city: '',
+                    state: '',
+                    zip: '',
+                    dob: '',
+                },
+                EmailList: [],
+            }
+        },
+        methods: {
+            showCreatePatientModal(){
+                $('#createPatientModal').modal({ backdrop: 'static', keyboard: false }, 'show');
+            }
+        }
+    };
+
+
+</script>

@@ -1,0 +1,60 @@
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue-demi"></script>
+    <script src="@Url.Content("https://cdn.jsdelivr.net/npm/@vuelidate/core")"></script>
+    <script src="@Url.Content("https://cdn.jsdelivr.net/npm/@vuelidate/validators")"></script>
+
+
+    <div id="app">
+        <form @@submit.prevent="submitForm">
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" v-model="form.name" @@blur="v$.form.name.$touch">
+                <div v-if="v$.form.name.$error">Name is required</div>
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" v-model="form.email" @@blur="v$.form.email.$touch">
+                <div v-if="v$.form.email.$error && v$.form.email.$dirty">
+                    <span v-if="!v$.form.email.required.$valid">Email is required</span>
+                    <span v-if="!v$.form.email.email.$valid">Invalid email format</span>
+                </div>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        const { createApp, ref } = Vue
+        const { useVuelidate } = Vuelidate
+        const { required, email } = VuelidateValidators
+
+        createApp({
+            setup() {
+                const form = ref({
+                    name: '',
+                    email: ''
+                })
+
+                const rules = {
+                    form: {
+                        name: { required },
+                        email: { required, email }
+                    }
+                }
+
+                const v$ = useVuelidate(rules, { form })
+
+                const submitForm = async () => {
+                    const isFormValid = await v$.value.$validate()
+                    if (isFormValid) {
+                        alert('Form submitted successfully!');
+                    } else {
+                        alert('Form has errors, please correct them.');
+                    }
+                }
+
+                return { form, v$, submitForm }
+            }
+        }).mount('#app')
+    </script>

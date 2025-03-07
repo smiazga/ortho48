@@ -1,0 +1,37 @@
+<script type="text/template" id="patient-details-template">
+    <div v-if="isVisible">Patient detail id: {{ id }}
+        <button @@click="goBackToPatientsView">Go Back</button>
+    </div>
+</script>
+
+<script type="text/javascript">
+    const patientDetails = {
+        template: '#patient-details-template',
+        props: {
+            isVisible: {
+                type: Boolean,
+                required: true
+            },
+            id: {
+                type: Number,
+                required: true
+            },
+        },
+        methods: {
+            goBackToPatientsView() {
+                this.$emit('back');
+            }
+        },
+        watch: {
+            id(val) {
+                console.log("watch", this.id);
+            }
+        },
+        //created: function() {
+        //    console.log("created", this.id);
+        //},
+        //mounted: function () {
+        //    console.log("mounted id", this.id);
+        //}
+    }
+</script>

@@ -218,7 +218,7 @@
                 if (this.allSelected) {
                     this.selectedItems = [];
                 } else {
-                    this.selectedItems = this.Products.map(item => item.Id);
+                    this.selectedItems = this.filteredAndSortedProducts.map(item => item.Id);
                 }
                 var result = await postFetchData('/sfapi/products/selectitems', this.selectedItems);
 

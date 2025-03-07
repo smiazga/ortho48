@@ -1,0 +1,112 @@
+@using Newtonsoft.Json;
+
+@Html.Partial("~/VueComponents/ManagePatients/CreatePatient.cshtml")
+@Html.Partial("~/VueComponents/ManagePatients/PatientDetails.cshtml")
+
+<div id="patients">
+    <div class="container">
+        <div id="patient-info" v-show="isPatientInfoVisible">
+            <div class="d-flex justify-content-between">
+                <div><input type="text" placeholder="Patient or email" v-model="searchTerm" /></div>
+                <div><button class="btn btn-primary" @@click="showCreatePatient()">Add Patient</button></div>
+            </div>
+
+            <table class="border-light">
+                <thead>
+                    <tr>
+                        <th @@click="sortPatientInfo('PatientName')">Patient</th>
+                        <th @@click="sortPatientInfo('DateRegistered')">Date registered</th>
+                        <th @@click="sortPatientInfo('OrdersCount')">Orders</th>
+                        <th @@click="sortPatientInfo('SubscriptionsCount')">Subscriptions</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="p in filteredAndSortedPatients">
+                        <td>
+                            {{ p.PatientInitials}} {{ p.PatientName }} {{ p.PatientEmail }}
+                        </td>
+                        <td>
+                            {{ p.DateRegistered }}
+                        </td>
+                        <td>
+                            {{ p.OrdersCount }}
+                        </td>
+                        <td>
+                            {{ p.SubscriptionsCount }}
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-primary" @@click="showPatientsDetails(p.CustomerId)">Details</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <create-patient :is-visible="isCreatePatientVisible" ref="createPatientModalRef"></create-patient>
+        <patient-details :is-visible="isPatientDetailVisible" :id="patientDetailId" @@back="closePatientDetails"></patient-details>
+
+    </div>
+</div>
+
+<script>
+    const patients = Vue.createApp({
+        data() {
+            return {
+                Patients: [],
+                isPatientInfoVisible: true,
+                isPatientDetailVisible: false,
+                isCreatePatientVisible: false,
+                patientDetailId: 0,
+                searchTerm: '',
+                currentSort: 'PatientName',
+                currentSortDir: 'asc'
+            }
+        },
+        computed: {
+            filteredAndSortedPatients() {
+                return this.Patients.filter(p => {
+                    const matchesSearch = p.PatientName.toLowerCase().includes(this.searchTerm.toLowerCase()) || p.PatientEmail.toLowerCase().includes(this.searchTerm.toLowerCase());
+                    return matchesSearch;
+                }).sort((a, b) => {
+                    let modifier = 1;
+                    if (this.currentSortDir === 'desc') modifier = -1;
+                    if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
+                    if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
+                    return 0;
+                });
+            }
+        },
+        methods: {
+            sortPatientInfo(sort) {
+                if (sort === this.currentSort) {
+                    this.currentSortDir = this.currentSortDir === 'asc' ? 'desc' : 'asc';
+                }
+                this.currentSort = sort;
+            },
+            showPatientsDetails(patientId) {
+                this.patientDetailId = patientId;
+                this.isPatientInfoVisible = false;
+                this.isPatientDetailVisible = true;
+            },
+            showCreatePatient() {
+                this.isPatientDetailVisible = false;
+                //this.isCreatePatientVisible = true;
+                const createPatientModal = this.$refs.createPatientModalRef;
+                if (createPatientModal) {
+                    createPatientModal.showCreatePatientModal();
+                }
+            },
+            closePatientDetails() {
+                this.isPatientDetailVisible = false;
+                this.isPatientInfoVisible = true;
+            }
+        },
+        created: function () {
+            this.Patients = @Html.Raw(JsonConvert.SerializeObject(Model.PatientInfoList));
+        }
+    });
+    patients.component('create-patient', createPatientModal);
+    patients.component('patient-details', patientDetails);
+    patients.mount('#patients');
+
+</script>
