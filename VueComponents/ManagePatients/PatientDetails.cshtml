@@ -1,11 +1,48 @@
+@Html.Partial("~/VueComponents/ManagePatients/PatientOrders.cshtml")
+@Html.Partial("~/VueComponents/ManagePatients/PatientSubscriptions.cshtml")
+
 <script type="text/template" id="patient-details-template">
-    <div v-if="isVisible">Patient detail id: {{ id }}
+    <div v-if="isVisible">
+        Patient detail id: {{ id }}
         <button @@click="goBackToPatientsView">Go Back</button>
+        <div class="m-3">
+            <div class="d-flex justify-content-start">
+                <div>{{ patientHeader.FirstName}} {{patientHeader.LastName}}</div>
+                <div>&nbsp;{{ patientHeader.Email }} </div>
+                <div>&nbsp;{{ patientHeader.Phone }} </div>
+            </div>
+        </div>
+        <div class="dashboard-listing-panel">
+            <div class="nav-tabs-container">
+                <ul class="nav nav-tabs" id="tab-nav" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="orders-tab" data-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="true">Orders</a>
+                        <button type="button" class="btn btn-primary tab-nav-modal" data-toggle="modal" data-target="#tab-nav-modal">Orders</button>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="subscriptions-tab" data-toggle="tab" href="#subscriptions" role="tab" aria-controls="subscriptions" aria-selected="false">Subscriptions</a>
+                        <button type="button" class="btn btn-primary tab-nav-modal" data-toggle="modal" data-target="#tab-nav-modal">Subscriptions</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                    <patient-orders :orders="patientOrders"></patient-orders>
+                </div>
+                <div class="tab-pane fade" id="subscriptions" role="tabpanel" aria-labelledby="subscriptions-tab">
+                    <patient-subscriptions :subscriptions="patientSubscriptions"></patient-subscriptions>
+                </div>
+            </div>
+        </div>
     </div>
 </script>
 
 <script type="text/javascript">
     const patientDetails = {
+        components: {
+            'patient-orders': patientOrders,
+            'patient-subscriptions': patientSubscriptions
+        },
         template: '#patient-details-template',
         props: {
             isVisible: {
@@ -17,14 +54,26 @@
                 required: true
             },
         },
+        data() {
+            return {
+                patientHeader: {},
+                patientOrders: [],
+                patientSubscriptions: [],
+            };
+        },
         methods: {
             goBackToPatientsView() {
                 this.$emit('back');
+            },
+            async getPatientDetails(customerId) {
+                this.patientHeader = await getFetchById('/sfapi/patients/details/', customerId);
+                this.patientOrders = await getFetchById('/sfapi/patients/orders/', customerId);
+                this.patientSubscriptions = await getFetchById('/sfapi/patients/subscriptions/', customerId);
             }
         },
         watch: {
             id(val) {
-                console.log("watch", this.id);
+                this.getPatientDetails(this.id);
             }
         },
         //created: function() {
@@ -34,4 +83,5 @@
         //    console.log("mounted id", this.id);
         //}
     }
+
 </script>

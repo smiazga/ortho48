@@ -1,11 +1,104 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿<script type="text/template" id="patient-orders-template">
+    <div>
+        <h4>Orders</h4>
+        <div class="d-flex">
+            <div><input type="text" placeholder="Order # or product" v-model="searchTerm" /></div>
+            <div>
+                <button class="filter-btn shadow w-100" type="button" data-toggle="dropdown" aria-expanded="false" v-on:click="toggleDropdown($event)">
+                    Sort By
+                    <i class="material-symbols-outlined" name="dropdownArrowIcon">expand_more</i>
+                </button>
+                <div class="dropdown-menu filter-dropdown shadowed">
+                    <div class="mx-2">
+                        <div><a href="#" @@click="sortOrders('OrderDateASC')">Order data(New - old)</a></div>
+                        <div><a href="#" @@click="sortOrders('OrderDateDESC')">Order data(Old - new)</a></div>
+                        <div><a href="#" @@click="sortOrders('OrderTotalDESC')">Price (Low - high)</a></div>
+                        <div><a href="#" @@click="sortOrders('OrderTotalASC')">Price (High - low)</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="m-1" v-for="o in filteredAndSortedOrders">
+                <div class="m-3 p-1" style="border: 1px solid black;">
+                    <div class="d-flex justify-content-start">
+                        <div>
+                            Order Date {{ o.OrderDate}}
+                        </div>
+                        <div>
+                            Order # {{ o.OrderId}}
+                        </div>
+                        <div>Order Total {{ o.OrderTotal}}</div>
+                    </div>
+                    <div v-for="ol in o.OrderLines">
+                        <div class="d-flex justify-content-around">
+                            <div><img :src="ol.ProductUrl" alt="" width="190" height="190" /></div>
+                            <div>{{ ol.ProductName}}</div>
+                            <div>{{ ol.Size}}</div>
+                            <div>{{ ol.OrderQuantity }}</div>
+                            <div>{{ ol.Price }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
 
-namespace ortho48.VueComponents.ManagePatients
-{
-	public class PatientOrders
-	{
-	}
-}
+<script type="text/javascript">
+    const patientOrders = {
+        template: '#patient-orders-template',
+        props: {
+            orders: {
+                type: Array,
+                required: true
+            }
+        },
+        data() {
+            return {
+                searchTerm: '',
+                selectedItems: [],
+                currentSort: 'OrderDateASC',
+                currentSortDir: 'ASC'
+            }
+        },
+        computed: {
+            filteredAndSortedOrders() {
+                return this.orders.filter(o => {
+                    const matchesSearch = (o.OrderProducts.toLowerCase().includes(this.searchTerm.toLowerCase()) || o.OrderId== this.searchTerm);
+                    return matchesSearch;
+                })
+                .sort((a, b) => {
+                    let modifier = 1;
+                    if (this.currentSortDir === 'DESC') modifier = -1;
+                    if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
+                    if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
+                    return 0;
+                });
+            }
+        },
+        methods: {
+            sortOrders: function (s) {
+                let sortName = s;
+                let sortDir = sortName.includes('ASC') ? 'ASC' : 'DESC';
+                sortName = sortName.substring(0, sortName.indexOf(sortDir));
+                this.currentSortDir = sortDir;
+                this.currentSort = sortName;
+            },
+            toggleDropdown(event) {
+                this.flipArrow(event.target);
+            },
+            flipArrow(element) {
+                if (element.tagName != 'I') {
+                    element = $(element).find("i[name=dropdownArrowIcon]");
+                }
+
+                if ($(element).hasClass("flipped")) {
+                    $(element).removeClass("flipped");
+                } else {
+                    $(element).addClass("flipped");
+                }
+            },
+        }
+    }
+</script>

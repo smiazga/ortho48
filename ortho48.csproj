@@ -117,6 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\Controllers\CrudsApiController.cs" />
+    <Compile Include="Api\Controllers\ManagePatientsApiController.cs" />
     <Compile Include="Api\Controllers\ManageProductsApiController.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -157,8 +158,8 @@
     <Compile Include="ViewModels\ProductsViewModel.cs" />
     <Content Include="VueComponents\Home\vuelidate-form.cshtml" />
     <Content Include="VueComponents\Home\vuelidate-form2.cshtml" />
-    <Content Include="json.json" />
     <None Include="VueComponents\ManagePatients\EditPatientDetails.cshtml" />
+    <Content Include="VueComponents\ManagePatients\PatientOrders - Copy.cshtml" />
     <None Include="VueComponents\ManagePatients\PatientOrders.cshtml" />
     <None Include="VueComponents\ManagePatients\PatientSubscriptions.cshtml" />
   </ItemGroup>
