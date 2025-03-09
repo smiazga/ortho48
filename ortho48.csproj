@@ -158,8 +158,10 @@
     <Compile Include="ViewModels\ProductsViewModel.cs" />
     <Content Include="VueComponents\Home\vuelidate-form.cshtml" />
     <Content Include="VueComponents\Home\vuelidate-form2.cshtml" />
-    <None Include="VueComponents\ManagePatients\EditPatientDetails.cshtml" />
+    <Content Include="VueComponents\ManagePatients\EditPatient - Copy.cshtml" />
+    <None Include="VueComponents\ManagePatients\EditPatient.cshtml" />
     <Content Include="VueComponents\ManagePatients\PatientOrders - Copy.cshtml" />
+    <Content Include="VueComponents\ManagePatients\PatientDetails - Copy.cshtml" />
     <None Include="VueComponents\ManagePatients\PatientOrders.cshtml" />
     <None Include="VueComponents\ManagePatients\PatientSubscriptions.cshtml" />
   </ItemGroup>

@@ -1,4 +1,5 @@
-﻿using ortho48.OrthoRepository.Services.Managers;
+﻿using ortho48.OrthoRepository.PatientDirect.Core.Patients;
+using ortho48.OrthoRepository.Services.Managers;
 using System.Web.Http;
 
 namespace ortho48.Api.Controllers
@@ -34,6 +35,14 @@ namespace ortho48.Api.Controllers
         {
             var patientSubscriptions = _patientsManager.GetSubscriptions(customerId);
             return Ok(patientSubscriptions);
+        }
+
+        [HttpPut]
+        [Route("details/{customerId:int}")]
+        public IHttpActionResult UpdatePatientDetails(int customerId, PatientDetails patientDetails)
+        {
+            var result = _patientsManager.UpdatePatientDetail(customerId, patientDetails);
+            return Ok(result);
         }
     }
 }

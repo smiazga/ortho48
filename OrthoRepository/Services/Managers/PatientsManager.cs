@@ -1,5 +1,7 @@
-﻿using ortho48.OrthoRepository.PatientDirect.Core.Orders;
+﻿using ortho48.OrthoRepository.PatientDirect.Core;
+using ortho48.OrthoRepository.PatientDirect.Core.Orders;
 using ortho48.OrthoRepository.PatientDirect.Core.Patients;
+using System;
 using System.Collections.Generic;
 
 namespace ortho48.OrthoRepository.Services.Managers
@@ -34,5 +36,22 @@ namespace ortho48.OrthoRepository.Services.Managers
             return patientSubscriptionsList;
         }
 
+        public Result UpdatePatientDetail(int customerId, PatientDetails patientDetails)
+        {
+            Result result = new Result();
+            try
+            {
+                PatientProcess patientProcess = new PatientProcess();
+                patientProcess.UpdatePatientDetails(customerId, patientDetails);
+                result.Status = "success";
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.Status = "failed";
+                result.Error = ex.Message.ToString();
+                return result;
+            }
+        }
     }
 }

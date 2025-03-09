@@ -37,13 +37,14 @@
                 </div>
             </div>
         </div>
-        <edit-patient :patient="patientHeader" @@editPatientResult="handlePatientResult" ref="editPatientModalRef"></edit-patient>
-
-        <div>
-            <modal-notification ref="modalNotificationRef">
-            </modal-notification>
-        </div>
+        <edit-patient :is-visible="isModalVisible" :patient="patientHeader" @@editPatientResult="handlePatientResult"></edit-patient>
     </div>
+
+    <div>
+        <modal-notification ref="modalNotificationRef">
+        </modal-notification>
+    </div>
+
 </script>
 
 <script type="text/javascript">
@@ -70,6 +71,7 @@
                 patientHeader: {},
                 patientOrders: [],
                 patientSubscriptions: [],
+                isModalVisible: false,
             };
         },
         methods: {
@@ -82,20 +84,15 @@
                 this.patientSubscriptions = await getFetchById('/sfapi/patients/subscriptions/', customerId);
             },
             showEditPatient() {
-                const editPatientModal = this.$refs.editPatientModalRef;
-                if (editPatientModal) {
-                    editPatientModal.showEditPatientModal();
-                }
+                this.isModalVisible = true;
             },
             async handlePatientResult(updateResult) {
-                const editPatientModal = this.$refs.editPatientModalRef;
-                if (editPatientModal) {
-                    editPatientModal.closeEditPatientModal();
-                }
                 if (updateResult.Status == "success") {
+                    this.isModalVisible = false;
                     this.patientHeader = await getFetchById('/sfapi/patients/details/', this.id);
                 }
                 else {
+                    this.isModalVisible = false;
                     this.showNotificationModal(updateResult);
                 }
 

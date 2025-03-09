@@ -1,0 +1,87 @@
+﻿<script type="text/x-template" id="patient-edit-template">
+    <div v-if="isVisible" class="modal-overlayX">
+        <div class="modalX">
+            <form @@submit.prevent="submitEditPatient">
+                <div>
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" v-model="formData.FirstName" required />
+                </div>
+                <div>
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="lastName" v-model="formData.LastName" required />
+                </div>
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="text" id="email" v-model="formData.Email" readonly required />
+                </div>
+                <div>
+                    <label for="phone">Phone:</label>
+                    <input type="text" id="phone" v-model="formData.Phone" />
+                </div>
+                <button type="submit">Save</button>
+                <button type="button" data-dismiss="modal">Cancel</button>
+                <input type="hidden" v-model="formData.CustomerId" />
+            </form>
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+    const editPatientModal = {
+        template: '#patient-edit-template',
+        props: {
+            isVisible: {
+                type: Boolean,
+                required: true
+            },
+            patient: {
+                type: Object,
+                required: true
+            }
+        },
+        data() {
+            return {
+                formData: this.patient
+            }
+        },
+        methods: {
+            showEditPatientModal() {
+                $('#editPatientModal').modal({ backdrop: 'static', keyboard: false }, 'show');
+            },
+            async submitEditPatient() {
+                var updateResult = await updateFetchData('/sfapi/patients/details/', this.formData.CustomerId, this.formData);
+                console.log("update", updateResult);
+                this.$emit('editPatientResult', updateResult);
+                //this.closeModal();
+            },
+        },
+        watch: {
+            patient(newData) {
+                this.formData = newData;
+            }
+        }
+    };
+
+
+</script>
+
+<style scoped>
+    .modal-overlayX {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modalX {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 300px;
+    }
+</style>

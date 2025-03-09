@@ -42,8 +42,8 @@
                 </tbody>
             </table>
         </div>
-        <create-patient :is-visible="isCreatePatientVisible" ref="createPatientModalRef"></create-patient>
-        <patient-details :is-visible="isPatientDetailVisible" :id="patientDetailId" @@back="closePatientDetails"></patient-details>
+        <div><create-patient :is-visible="isCreatePatientVisible" ref="createPatientModalRef"></create-patient></div>
+        <div><patient-details :is-visible="isPatientDetailVisible" :id="patientDetailId" @@back="closePatientDetails"></patient-details></div>
 
     </div>
 </div>

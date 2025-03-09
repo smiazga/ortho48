@@ -95,5 +95,17 @@ namespace ortho48.OrthoRepository.PatientDirect.Core.Patients
             orders.ForEach(x => x.OrderProducts = string.Join(", ", x.OrderLines.Select(y => y.ProductName).Distinct()));
             return orders;
         }
+
+        public void UpdatePatientDetails(int customerId, PatientDetails patientDetails)
+        {
+            var patient = AllPatientDetails.Find(p => p.CustomerId == customerId);
+            if (patient != null)
+            {
+                patient.FirstName = patientDetails.FirstName;
+                patient.LastName = patientDetails.LastName;
+                patient.Email = patientDetails.Email;
+                patient.Phone = patientDetails.Phone;
+            }
+        }
     }
 }
