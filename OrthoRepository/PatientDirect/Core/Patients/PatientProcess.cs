@@ -9,9 +9,9 @@ namespace ortho48.OrthoRepository.PatientDirect.Core.Patients
     {
         private static readonly List<PatientInfo> AllPatients = new List<PatientInfo>()
             {
-                new PatientInfo { CustomerId=1,PatientInitials="JD",PatientName="John Doe",PatientEmail="j.doe@test.com",DateRegistered="Jan 2nd 2025",OrdersCount=3,SubscriptionsCount=3  },
-                new PatientInfo { CustomerId=2,PatientInitials="MB",PatientName="Mike Brown",PatientEmail="m.brown@test.com",DateRegistered="Jan 3rd 2025",OrdersCount=1,SubscriptionsCount=2  },
-                new PatientInfo { CustomerId=3,PatientInitials="SS",PatientName="Steve Smith",PatientEmail="s.smith@test.com",DateRegistered="Fed 4th 2025",OrdersCount=2,SubscriptionsCount=1  },
+                new PatientInfo { CustomerId=1,PatientInitials="JD",PatientName="John Doe",PatientEmail="j.doe@test.com",DateRegistered=null,OrdersCount=3,SubscriptionsCount=3  },
+                new PatientInfo { CustomerId=2,PatientInitials="MB",PatientName="Mike Brown",PatientEmail="m.brown@test.com",DateRegistered=new DateTime(2025,1,2),OrdersCount=1,SubscriptionsCount=2  },
+                new PatientInfo { CustomerId=3,PatientInitials="SS",PatientName="Steve Smith",PatientEmail="s.smith@test.com",DateRegistered=new DateTime(2025,2,4),OrdersCount=2,SubscriptionsCount=1  },
              };
 
         private static readonly List<PatientDetails> AllPatientDetails = new List<PatientDetails>()
@@ -106,6 +106,12 @@ namespace ortho48.OrthoRepository.PatientDirect.Core.Patients
                 patient.Email = patientDetails.Email;
                 patient.Phone = patientDetails.Phone;
             }
+        }
+
+        public void AddPatientInfo(PatientInfo patientInfo)
+        {
+            patientInfo.CustomerId = AllPatients.Max(x => x.CustomerId) + 1;
+            AllPatients.Add(patientInfo);
         }
     }
 }

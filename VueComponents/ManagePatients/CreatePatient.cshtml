@@ -1,24 +1,49 @@
+@*@Html.Partial("~/VueComponents/Common/ModalNotification.cshtml")*@
 <script type="text/x-template" id="patient-create-template">
-    <div class="modal" id="createPatientModal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header flex-column align-items-center">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body d-flex flex-column align-items-center justify-content-center">
-                    <h5 class="mb-4 text-center">Create patient</h5>
-                    <h3 class="mb-4 text-center">Patient(s) will receive an email inviatation to register</h3>
-
+    <div>
+        <div class="modal" id="createPatientModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header flex-column align-items-center">
+                        <button type="button" class="close" @@click="closeCreatePatientModal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body d-flex flex-column align-items-center justify-content-center">
+                        <h5 class="mb-4 text-center">Create patient</h5>
+                        <h3 class="mb-4 text-center">Patient(s) will receive an email inviatation to register</h3>
+                        <form @@submit.prevent="submitCreatePatient">
+                            <div>
+                                <label for="firstName">First Name:</label>
+                                <input type="text" id="firstName" v-model="patient.firstName" required />
+                            </div>
+                            <div>
+                                <label for="lastName">Last Name:</label>
+                                <input type="text" id="lastName" v-model="patient.lastName" required />
+                            </div>
+                            <div>
+                                <label for="email">Email:</label>
+                                <input type="text" id="email" v-model="patient.email" required />
+                            </div>
+                            <button type="submit">Save</button>
+                            <button type="button" @@click="closeCreatePatientModal">Cancel</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
+        @*<div>
+            <modal-notificationr ref="modalNotificationRefr">
+            </modal-notificationr>
+        </div>*@
     </div>
 </script>
 
 <script type="text/javascript">
     const createPatientModal = {
+        //components: {
+        //    'modal-notificationr': modalNotification
+        //},
         template: '#patient-create-template',
         //props: {
         //    isVisible: {
@@ -32,22 +57,28 @@
                     firstName: '',
                     lastName: '',
                     email: '',
-                    phone: '',
-                    address: '',
-                    city: '',
-                    state: '',
-                    zip: '',
-                    dob: '',
                 },
                 EmailList: [],
             }
         },
         methods: {
-            showCreatePatientModal(){
+            showCreatePatientModal() {
                 $('#createPatientModal').modal({ backdrop: 'static', keyboard: false }, 'show');
-            }
+            },
+            closeCreatePatientModal() {
+                $('#createPatientModal').modal('hide');
+                this.patient = {};
+            },
+            async submitCreatePatient() {
+                //this.$root.$refs.spinnerRef.show();
+                var createResult = await postFetchData('/sfapi/patients/info/', this.patient, this.$root.$refs.modalNotificationRef, this.$root.$refs.spinnerRef);
+                //var createResult = await postFetchData('/sfapi/patients/info/', this.patient, this.$root.$refs.modalNotificationRef);
+                this.patient = {};
+                this.$emit('createPatientResult', createResult);
+            },
         }
     };
 
 
 </script>
+

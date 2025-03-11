@@ -12,10 +12,10 @@
                 </button>
                 <div class="dropdown-menu filter-dropdown shadowed">
                     <div class="mx-2">
-                        <div><a href="#" @@click="sortOrders('NextOrderDateASC')">Order data(New - old)</a></div>
-                        <div><a href="#" @@click="sortOrders('NextOrderDateDESC')">Order data(Old - new)</a></div>
-                        <div><a href="#" @@click="sortOrders('OrderTotalDESC')">Price (Low - high)</a></div>
-                        <div><a href="#" @@click="sortOrders('OrderTotalASC')">Price (High - low)</a></div>
+                        <div><a href="#" @@click="sortOrders('NextOrderDateDESC')">Order data(New - old)</a></div>
+                        <div><a href="#" @@click="sortOrders('NextOrderDateASC')">Order data(Old - new)</a></div>
+                        <div><a href="#" @@click="sortOrders('OrderTotalASC')">Price (Low - high)</a></div>
+                        <div><a href="#" @@click="sortOrders('OrderTotalDESC')">Price (High - low)</a></div>
                     </div>
                 </div>
             </div>
@@ -25,7 +25,7 @@
                 <div class="m-3 p-1" style="border: 1px solid black;">
                     <div class="d-flex justify-content-start">
                         <div>
-                            Order Date {{ o.NextOrderDate}}
+                            Order Date {{ toDateFormat(o.NextOrderDate) }}
                         </div>
                         <div>
                             Shipment # {{ o.ShipmentOrderId}}
@@ -40,7 +40,7 @@
                             <div>{{ ol.ProductName}}</div>
                             <div>{{ ol.Size}}</div>
                             <div>{{ ol.OrderQuantity }}</div>
-                            <div>{{ ol.Price }}</div>
+                            <div>{{ toCurrency(ol.Price) }}</div>
                         </div>
                     </div>
                 </div>
@@ -79,9 +79,20 @@
                     if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
                     return 0;
                 });
-            }
+            },
         },
         methods: {
+            toCurrency(value) {
+                return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", }).format(value);
+            },
+            toDateFormat(value) {
+                if (value != null) {
+                    return moment(value.toString()).format('MMM Do, YYYY');
+                }
+                else {
+                    return "-";
+                }
+            },
             sortOrders: function (s) {
                 let sortName = s;
                 let sortDir = sortName.includes('ASC') ? 'ASC' : 'DESC';

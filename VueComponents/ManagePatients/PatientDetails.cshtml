@@ -1,7 +1,7 @@
 @Html.Partial("~/VueComponents/ManagePatients/EditPatient.cshtml")
 @Html.Partial("~/VueComponents/ManagePatients/PatientOrders.cshtml")
 @Html.Partial("~/VueComponents/ManagePatients/PatientSubscriptions.cshtml")
-@Html.Partial("~/VueComponents/Common/ModalNotification.cshtml")
+@*@Html.Partial("~/VueComponents/Common/ModalNotification.cshtml")*@
 
 <script type="text/template" id="patient-details-template">
     <div v-if="isVisible">
@@ -37,22 +37,18 @@
                 </div>
             </div>
         </div>
-        <edit-patient :patient="patientHeader" @@editPatientResult="handlePatientResult" ref="editPatientModalRef"></edit-patient>
-
-        <div>
-            <modal-notification ref="modalNotificationRef">
-            </modal-notification>
-        </div>
+        <edit-patient :patient="patientHeader" @@edit-patient-result="handleEditPatientResult" ref="editPatientModalRef"></edit-patient>
     </div>
 </script>
-
+@*<script src="~/Scripts/showNotificationModal.js"></script>*@
 <script type="text/javascript">
+
     const patientDetails = {
         components: {
             'patient-orders': patientOrders,
             'patient-subscriptions': patientSubscriptions,
-            'edit-patient': editPatientModal,
-            'modal-notification': modalNotification
+            /*'edit-patient': editPatientModal*/
+            /*'modal-notification': modalNotification*/
         },
         template: '#patient-details-template',
         props: {
@@ -77,41 +73,20 @@
                 this.$emit('back');
             },
             async getPatientDetails(customerId) {
+                this.$root.$refs.spinnerRef.show();
                 this.patientHeader = await getFetchById('/sfapi/patients/details/', customerId);
                 this.patientOrders = await getFetchById('/sfapi/patients/orders/', customerId);
                 this.patientSubscriptions = await getFetchById('/sfapi/patients/subscriptions/', customerId);
+                this.$root.$refs.spinnerRef.hide();
             },
             showEditPatient() {
-                const editPatientModal = this.$refs.editPatientModalRef;
-                if (editPatientModal) {
-                    editPatientModal.showEditPatientModal();
-                }
+                this.$refs.editPatientModalRef.showEditPatientModal();
             },
-            async handlePatientResult(updateResult) {
-                const editPatientModal = this.$refs.editPatientModalRef;
-                if (editPatientModal) {
-                    editPatientModal.closeEditPatientModal();
-                }
+            async handleEditPatientResult(updateResult) {
+                this.$refs.editPatientModalRef.closeEditPatientModal();
+
                 if (updateResult.Status == "success") {
                     this.patientHeader = await getFetchById('/sfapi/patients/details/', this.id);
-                }
-                else {
-                    this.showNotificationModal(updateResult);
-                }
-
-            },
-            showNotificationModal(resultNotification) {
-                const modalNotificationComponent = this.$refs.modalNotificationRef;
-                if (modalNotificationComponent) {
-                    if (resultNotification == undefined) {
-                        modalNotificationComponent.notificationDisplay('error', '');
-                    }
-                    else if (resultNotification.Status == "failed") {
-                        modalNotificationComponent.notificationDisplay('error', resultNotification.Message);
-                    }
-                    else if (resultNotification.Status == "success") {
-                        modalNotificationComponent.notificationDisplay('info', resultNotification.Message);
-                    }
                 }
             }
         },

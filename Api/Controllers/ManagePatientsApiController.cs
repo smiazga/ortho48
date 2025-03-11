@@ -14,6 +14,14 @@ namespace ortho48.Api.Controllers
         }
 
         [HttpGet]
+        [Route("info")]
+        public IHttpActionResult GetPatientInfo()
+        {
+            var patientsList = _patientsManager.GetPatients();
+            return Ok(patientsList);
+        }
+
+        [HttpGet]
         [Route("details/{customerId:int}")]
         public IHttpActionResult GetPatientDetails(int customerId)
         {
@@ -44,5 +52,14 @@ namespace ortho48.Api.Controllers
             var result = _patientsManager.UpdatePatientDetail(customerId, patientDetails);
             return Ok(result);
         }
+
+        [HttpPost]
+        [Route("info")]
+        public IHttpActionResult CreatePatientInfo(PatientInfo patientInfo)
+        {
+            var result = _patientsManager.CreatePatientInfo(patientInfo);
+            return Ok(result);
+        }
+
     }
 }

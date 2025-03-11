@@ -105,14 +105,18 @@
     <Content Include="Content\main.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Global.asax" />
+    <Content Include="HtmlPage1.html" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\fetchwrapper.js" />
     <Content Include="Scripts\jquery-3.6.0.min.js" />
     <Content Include="Scripts\jquery.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\popper.min.js" />
     <Content Include="Scripts\vue3.global.prod.js" />
     <Content Include="Scripts\vue3.js" />
     <Content Include="Scripts\vue3.min.js" />
+    <Content Include="Scripts\showNotificationModal.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +163,7 @@
     <Content Include="VueComponents\Home\vuelidate-form.cshtml" />
     <Content Include="VueComponents\Home\vuelidate-form2.cshtml" />
     <Content Include="VueComponents\ManagePatients\EditPatient - Copy.cshtml" />
+    <Content Include="VueComponents\Common\Spinner.cshtml" />
     <None Include="VueComponents\ManagePatients\EditPatient.cshtml" />
     <Content Include="VueComponents\ManagePatients\PatientOrders - Copy.cshtml" />
     <Content Include="VueComponents\ManagePatients\PatientDetails - Copy.cshtml" />

@@ -53,5 +53,24 @@ namespace ortho48.OrthoRepository.Services.Managers
                 return result;
             }
         }
+
+        public Result CreatePatientInfo(PatientInfo patientInfo)
+        {
+            Result result = new Result();
+            try
+            {
+                //PatientProcess patientProcess = new PatientProcess();
+                //patientProcess.AddPatientInfo(patientInfo);
+                result.Status = "success";
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.Status = "failed";
+                result.Error = ex.Message.ToString();
+                return result;
+            }
+        }
+
     }
 }

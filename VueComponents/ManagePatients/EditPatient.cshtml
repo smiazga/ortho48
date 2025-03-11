@@ -1,44 +1,53 @@
-﻿<script type="text/x-template" id="patient-edit-template">
-    <div class="modal" id="editPatientModal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header flex-column align-items-center">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body d-flex flex-column align-items-center justify-content-center">
-                    <h5 class="mb-4 text-center">Edit patient</h5>
-                    <form @@submit.prevent="submitEditPatient">
-                        <div>
-                            <label for="firstName">First Name:</label>
-                            <input type="text" id="firstName" v-model="formData.FirstName" required />
-                        </div>
-                        <div>
-                            <label for="lastName">Last Name:</label>
-                            <input type="text" id="lastName" v-model="formData.LastName" required />
-                        </div>
-                        <div>
-                            <label for="email">Email:</label>
-                            <input type="text" id="email" v-model="formData.Email" readonly required />
-                        </div>
-                        <div>
-                            <label for="phone">Phone:</label>
-                            <input type="text" id="phone" v-model="formData.Phone" />
-                        </div>
-                        <button type="submit">Save</button>
-                        <button type="button" data-dismiss="modal">Cancel</button>
-                        <input type="hidden" v-model="formData.CustomerId" />
-                    </form>
+﻿@*@Html.Partial("~/VueComponents/Common/ModalNotification.cshtml")*@
+<script type="text/x-template" id="patient-edit-template">
+    <div>
+        <div class="modal" id="editPatientModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header flex-column align-items-center">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body d-flex flex-column align-items-center justify-content-center">
+                        <h5 class="mb-4 text-center">Edit patient</h5>
+                        <form @@submit.prevent="submitEditPatient">
+                            <div>
+                                <label for="firstName">First Name:</label>
+                                <input type="text" id="firstName" v-model="formData.FirstName" required />
+                            </div>
+                            <div>
+                                <label for="lastName">Last Name:</label>
+                                <input type="text" id="lastName" v-model="formData.LastName" required />
+                            </div>
+                            <div>
+                                <label for="email">Email:</label>
+                                <input type="text" id="email" v-model="formData.Email" readonly required />
+                            </div>
+                            <div>
+                                <label for="phone">Phone:</label>
+                                <input type="text" id="phone" v-model="formData.Phone" />
+                            </div>
+                            <button type="submit">Save</button>
+                            <button type="button" data-dismiss="modal">Cancel</button>
+                            <input type="hidden" v-model="formData.CustomerId" />
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
+        @*<div>
+            <modal-notification ref="modalNotificationRef">
+            </modal-notification>
+        </div>*@
     </div>
-
 </script>
 
 <script type="text/javascript">
     const editPatientModal = {
+        //components: {
+        //    'modal-notification': modalNotification
+        //},
         template: '#patient-edit-template',
         props: {
             //isVisible: {
@@ -63,8 +72,8 @@
                 $('#editPatientModal').modal('hide');
             },
             async submitEditPatient() {
-                var updateResult = await updateFetchData('/sfapi/patients/details/', this.formData.CustomerId, this.formData);
-                console.log("update", updateResult);
+                var updateResult = await updateFetchData('/sfapi/patients/details/', this.formData.CustomerId, this.formData, this.$root.$refs.modalNotificationRef, this.$root.$refs.spinnerRef);
+                //console.log("update", updateResult);
                 this.$emit('editPatientResult', updateResult);
                 //this.closeModal();
             },

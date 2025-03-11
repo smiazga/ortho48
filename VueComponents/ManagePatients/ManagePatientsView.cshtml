@@ -1,7 +1,10 @@
 @using Newtonsoft.Json;
 
+@Html.Partial("~/VueComponents/Common/ModalNotification.cshtml")
 @Html.Partial("~/VueComponents/ManagePatients/CreatePatient.cshtml")
 @Html.Partial("~/VueComponents/ManagePatients/PatientDetails.cshtml")
+@Html.Partial("~/VueComponents/Common/Spinner.cshtml")
+<script src="~/Scripts/moment.js"></script>
 
 <div id="patients">
     <div class="container">
@@ -27,7 +30,7 @@
                             {{ p.PatientInitials}} {{ p.PatientName }} {{ p.PatientEmail }}
                         </td>
                         <td>
-                            {{ p.DateRegistered }}
+                            {{ toDateFormat(p.DateRegistered) }}
                         </td>
                         <td>
                             {{ p.OrdersCount }}
@@ -42,20 +45,26 @@
                 </tbody>
             </table>
         </div>
-        <div><create-patient :is-visible="isCreatePatientVisible" ref="createPatientModalRef"></create-patient></div>
+        <div><create-patient @@create-patient-result="handleCreatePatientResult" ref="createPatientModalRef"></create-patient></div>
         <div><patient-details :is-visible="isPatientDetailVisible" :id="patientDetailId" @@back="closePatientDetails"></patient-details></div>
-
+        <div>
+            <modal-notification ref="modalNotificationRef">
+            </modal-notification>
+        </div>
+        <div>
+            <spinner ref="spinnerRef"></spinner>
+        </div>
     </div>
 </div>
 
 <script>
+
     const patients = Vue.createApp({
         data() {
             return {
                 Patients: [],
                 isPatientInfoVisible: true,
                 isPatientDetailVisible: false,
-                isCreatePatientVisible: false,
                 patientDetailId: 0,
                 searchTerm: '',
                 currentSort: 'PatientName',
@@ -74,9 +83,17 @@
                     if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
                     return 0;
                 });
-            }
+            },
         },
         methods: {
+            toDateFormat(value) {
+                if (value != null) {
+                    return moment(value.toString()).format('MMM Do, YYYY');
+                }
+                else {
+                    return "-";
+                }
+            },
             sortPatientInfo(sort) {
                 if (sort === this.currentSort) {
                     this.currentSortDir = this.currentSortDir === 'asc' ? 'desc' : 'asc';
@@ -90,11 +107,14 @@
             },
             showCreatePatient() {
                 this.isPatientDetailVisible = false;
-                //this.isCreatePatientVisible = true;
-                const createPatientModal = this.$refs.createPatientModalRef;
-                if (createPatientModal) {
-                    createPatientModal.showCreatePatientModal();
+                this.$refs.createPatientModalRef.showCreatePatientModal();
+            },
+            async handleCreatePatientResult(createResult) {
+                this.$refs.createPatientModalRef.closeCreatePatientModal();
+                if (createResult.Status == "success") {
+                    this.patientHeader = await getFetch('/sfapi/patients/info/',null, this.$root.$refs.spinnerRef);
                 }
+                //this.$root.$refs.spinnerRef.hide();
             },
             closePatientDetails() {
                 this.isPatientDetailVisible = false;
@@ -107,6 +127,9 @@
     });
     patients.component('create-patient', createPatientModal);
     patients.component('patient-details', patientDetails);
+    patients.component('edit-patient', editPatientModal);
+    patients.component('modal-notification', modalNotification);
+    patients.component('spinner', spinner);
     patients.mount('#patients');
 
 </script>
