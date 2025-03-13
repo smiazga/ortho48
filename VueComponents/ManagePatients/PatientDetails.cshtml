@@ -78,6 +78,85 @@
                 this.patientOrders = await getFetchById('/sfapi/patients/orders/', customerId);
                 this.patientSubscriptions = await getFetchById('/sfapi/patients/subscriptions/', customerId);
                 this.$root.$refs.spinnerRef.hide();
+
+                //const urls = [
+                //    '/sfapi/patients/details/' + customerId,
+                //    '/sfapi/patients/orders/' + customerId,
+                //    '/sfapi/patients/subscriptions/' + customerId
+                //];
+
+                //for (const url of urls) {
+                //    try {
+                //        const response = await fetch(url);
+                //        if (!response.ok) {
+                //            throw new Error(`HTTP error! status: ${response.status}`);
+                //        }
+                //        const data = await response.json();
+
+                //        // Check your condition here
+                //        if (data.someCondition) {
+                //            console.log('Condition met, stopping further requests.');
+                //            break;
+                //        }
+                //        console.log('Data:', data);
+
+                //    } catch (error) {
+                //        console.error('Fetch error:', error);
+                //        break; // Stop further requests if there's an error
+                //    }
+                //}
+
+                //    const responses = await this.makeMultipleAPICalls([
+                //        '/sfapi/patients/details/' + customerId,
+                //        '/sfapi/patients/orders/' + customerId,
+                //        '/sfapi/patients/subscriptions/' + customerId
+                //    ]);
+
+                //    const result = responses.some(obj => obj.Email === 'm.brown@test.com');
+                //    if (result) {
+                //        console.log("stop");
+                //    }
+                //    else {
+                //        this.patientHeader = responses[0];
+                //        this.patientOrders = responses[1];
+                //        this.patientSubscriptions = responses[2];
+                //        console.log('Responses:', responses);
+                //    }
+
+
+                //},
+                //async makeAPICall(endpoint) {
+                //    const response = await fetch(endpoint);
+                //    const data = await response.json();
+                //    return data;
+                //},
+                //async makeMultipleAPICalls(endpoints) {
+                //    const promises = endpoints.map(this.makeAPICall);
+                //    /*const responses = await Promise.all(promises).catch(console.log("Er"));*/
+                //    const responses = await Promise.all(promises);
+                //    return responses;
+                //},
+
+                /* When change for response status
+                const urls = [
+                    '/sfapi/patients/details/' + customerId,
+                    '/sfapi/patients/orders/' + customerId,
+                    '/sfapi/patients/subscriptions/' + customerId
+                ];
+
+                const responsesData = await getMultipleFetch(urls, this.$root.$refs.modalNotificationRef, this.$root.$refs.spinnerRef, this.$root.$refs.spinnerRef)
+                //redirect back on modal ok?
+                if (responsesData.some(r => r.Status == "failed")) {
+                    this.patientHeader = [];
+                    this.patientOrders = [];
+                    this.patientSubscriptions = [];
+                }
+                else {
+                   this.patientHeader = responsesData[0];
+                   this.patientOrders = responsesData[1];
+                   this.patientSubscriptions = responsesData[2];
+                }
+                */
             },
             showEditPatient() {
                 this.$refs.editPatientModalRef.showEditPatientModal();

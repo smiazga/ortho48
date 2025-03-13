@@ -183,3 +183,40 @@ function showNotificationModal(resultNotification, modalNotificationRef) {
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+async function getMultipleFetch(urls, modalNotificationRef = null, spinnerRef = null) {
+    try {
+        if (spinnerRef != null) {
+            spinnerRef.show();
+        }
+        //await delay(1000);
+
+        const promises = urls.map(makeAPICall);
+        const responsesData = await Promise.all(promises);
+
+        if (spinnerRef != null) {
+            spinnerRef.hide();
+        }
+
+        if (responsesData.some(r => r.Status == "failed") && modalNotificationRef != null) {
+            showNotificationModal(responsesData, modalNotificationRef);
+        }
+        return responsesData;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        //throw error; // Re-throw the error if you want to handle it further up the call stack
+        if (spinnerRef != null) {
+            spinnerRef.hide();
+        }
+        if (modalNotificationRef != null) {
+            showNotificationModal(undefined, modalNotificationRef);
+        }
+    }
+}
+
+async function makeAPICall(endpoint) {
+    const response = await fetch(endpoint);
+    const data = await response.json();
+    return data;
+}
+
