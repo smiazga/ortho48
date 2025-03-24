@@ -1,0 +1,241 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="../Content/fontawesome-free-5.15.4-web/css/all.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <style>
+        /*https://www.w3schools.com/colors/colors_picker.asp*/
+        .pd-navbackround {
+            /*background-color: rgb(247,251,254);*/
+            background-color:#f7fbfe;
+        }
+        .pd-text {
+            /*color: rgb(107,117,129);*/
+            color: #6b7581;
+        }
+        .pd-button {
+            /*background-color: rgb(26,67,99);*/
+            background-color: #1a4363;
+        }
+        .pd-border-color {
+            /*color:rgb(216,216,216);*/
+            color: #d8d8d8;
+        }
+        .pd-initals-color {
+            /*background-color: rgb(243,247,250);*/
+            background-color: #f3f7fa;
+        }
+        .pd-archswitch {
+            background-color: rgb(72,144,166);
+            background-color: #4890a6;
+        }
+
+
+
+        .switchtab-container {
+            position: relative;
+            /* width: 360px;
+            height: 32px;
+            border-radius: 16px;*/
+            width: 385px;
+            height: 50px;
+            border-radius: 30px;
+            background: transparent;
+            /*border: 1px solid #1e2834;*/
+            border: 1px solid #434d56;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .switchtab-handle {
+            position: absolute;
+            box-sizing: border-box;
+            width: 180px;
+            height: 32px;
+            border-radius: 16px;
+            /*demo*/
+            /*background: #1e2834;
+            border: 1px solid #1e2834;*/
+            /*louie variables*/
+            background: #cad4d8;
+            border: 1px solid #434d56;
+            transition: 0.5s;
+            /*left: 0;*/
+            left: 10px;
+            z-index: 0;
+        }
+
+        .switchtab-opt {
+            text-align: center;
+            flex: 1 0 180px;
+            font-size: 16px;
+            font-family: sans-serif;
+            transition: 0.3s;
+            /*color: #1e2834;*/
+            color: #434d56;
+            cursor: pointer;
+            z-index: 1;
+            padding: 5px 10px;
+        }
+
+            .switchtab-opt.activated {
+                /*color: white;*/
+                color: #434d56;
+                cursor: auto;
+            }
+
+        .switchtab-handle.orders {
+            /*left: 0px;*/
+            left: 10px;
+        }
+
+        .switchtab-handle.subscriptions {
+            left: 50%;
+        }
+
+        .switchtab-hide {
+            display: none;
+        }
+
+        .switch-check-archpatcolor:checked {
+            background-color: #20c997;
+            border-color: #20c997;
+        }
+
+        .search-input-container {
+            position: relative;
+            width: 350px;
+            color: #262626;
+            padding: 10px 20px 10px 20px;
+            border: 1px solid #434d56;
+            border-radius: 8px;
+        }
+
+        .search-input {
+            width:295px;
+            border: none;
+        }
+
+            .search-input:focus {
+                outline: none;
+            }
+
+        .search-terms {
+            top: 15px;
+            position: absolute;
+            right: 15px;
+            display: block;
+            z-index: 10;
+            color: #cad4d8;
+        }
+
+        .circle-color {
+            background-color: #cad4d8;
+            border:1px solid #cad4d8 !important;
+        }
+
+        .orders-border {
+            border: 1px solid #434d56;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <br />
+    <br />
+    <div class="search-input-container">
+        <input type="text" class="search-input" name="name" value="" placeholder="Patient or email" />
+        <span class="search-terms fas fa-search"></span>
+    </div>
+
+    <br />
+    <br />
+    <div class="d-flex align-items-center">
+        <div class="me-3"><div class="circle-color rounded-circle p-3">SM</div></div>
+        <div>
+            <div>Steve Miazga</div>
+            <div>s.miazga@ompimail.com</div>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="container my-3">
+        <div class="d-flex flex-column align-items-center orders-border p-4">
+            <div class="bg-light border rounded-circle p-3"><i class="fas fa-users"></i></div>
+            <div>No patients</div>
+        </div>
+    </div>
+    <div class="container my-3">
+        <div class="d-flex flex-column align-items-center orders-border p-4">
+            <div class="bg-light border rounded-circle p-3"><i class="fas fa-list"></i></div>
+            <div>No patients</div>
+        </div>
+    </div>
+    <!--<div class="container my-3">
+        <div class="d-flex flex-column align-items-center border border-secondary p-4 rounded-3">
+            <div class="bg-light border rounded-circle p-3"><i class="fas fa-users"></i></div>
+            <div>No patients</div>
+        </div>
+    </div>-->
+    <br />
+    <br />
+    <div class="container my-3">
+        <div class="d-flex flex-column align-items-center orders-border p-4">
+            <div class="circle-color rounded-circle p-3"><i class="fas fa-list"></i></div>
+            <div>Tom Brady has no orders</div>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+        <label class="form-check-label" for="flexSwitchCheckDefault">Default switch checkbox input</label>
+    </div>
+    <div class="form-check form-switch">
+        <input class="form-check-input switch-check-archpatcolor" type="checkbox" role="switch" id="archived-patients">
+        <label class="form-check-label" style="color: #434d56;" for="archived-patients">Archived Patients</label>
+    </div>
+    <br />
+    <br />
+    <div>
+        <div class="switchtab-container">
+            <div class='switchtab-handle orders' id='switchhandler'></div>
+            <div class="switchtab-opt activated" id="orders">Orders</div>
+            <div class="switchtab-opt" id="subscriptions">Subscriptions</div>
+        </div>
+        <div id="orders-tab">show orders</div>
+        <div id="subscriptions-tab" class="switchtab-hide">show subscriptions</div>
+    </div>
+
+    <script>
+        var switchHandler = document.getElementById("switchhandler");
+        var ordersTab = document.getElementById("orders-tab");
+        var subscriptionsTab = document.getElementById("subscriptions-tab");
+        var ordersOpt = document.getElementById("orders");
+        var subscriptionsOpt = document.getElementById("subscriptions");
+
+        ordersOpt.onclick = function () {
+            subscriptionsOpt.classList.remove("activated");
+            ordersOpt.classList.add("activated");
+            ordersTab.classList.remove("switchtab-hide");
+            switchHandler.classList.remove("subscriptions");
+            switchHandler.classList.add("orders");
+            subscriptionsTab.classList.add("switchtab-hide");
+        };
+
+        subscriptionsOpt.onclick = function () {
+            ordersOpt.classList.remove("activated");
+            subscriptionsOpt.classList.add("activated");
+            switchHandler.classList.add("subscriptions");
+            switchHandler.classList.remove("orders");
+            ordersTab.classList.add("switchtab-hide");
+            subscriptionsTab.classList.remove("switchtab-hide");
+        };
+    </script>
+</body>
+</html>

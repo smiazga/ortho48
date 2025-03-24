@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sortable Table</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+            th.sortable {
+                cursor: pointer;
+                position: relative;
+                padding-right: 20px;
+            }
+
+                th.sortable::after {
+                    content: '\25B2'; /* Upwards chevron */
+                    position: absolute;
+                    right: 10px;
+                    font-size: 0.8em;
+                    transform: rotate(0deg);
+                    transition: transform 0.2s ease;
+                }
+
+                th.sortable[data-sort="desc"]::after {
+                    content: '\25BC'; /* Downwards chevron */
+                }
+
+    </style>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th class="sortable" data-sort="asc">Name</th>
+                <th class="sortable" data-sort="asc">Age</th>
+                <th class="sortable" data-sort="asc">City</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>John Doe</td>
+                <td>30</td>
+                <td>New York</td>
+            </tr>
+            <tr>
+                <td>Jane Smith</td>
+                <td>25</td>
+                <td>Los Angeles</td>
+            </tr>
+            <tr>
+                <td>Sam Brown</td>
+                <td>22</td>
+                <td>Chicago</td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const headers = document.querySelectorAll('th.sortable');
+
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const sortOrder = header.getAttribute('data-sort');
+                    const newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+                    header.setAttribute('data-sort', newSortOrder);
+
+                    // Add sorting logic here if needed
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>

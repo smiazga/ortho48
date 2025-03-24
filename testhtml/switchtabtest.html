@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="patientdirect/css/main-patientdirect.css" rel="stylesheet" />
+    <style>
+/*        https://codepen.io/takagimassao/pen/WBLoqp*/
+        .switch-container {
+            position: relative;
+            width: 360px;
+            height: 32px;
+            border-radius: 16px;
+            background: transparent;
+            border: 1px solid #1e2834;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .handle {
+            position: absolute;
+            box-sizing: border-box;
+            width: 180px;
+            height: 32px;
+            border-radius: 16px;
+            background: #1e2834;
+            border: 1px solid #1e2834;
+            transition: 0.5s;
+            left: 0;
+            z-index: 0;
+        }
+
+        .opt {
+            text-align: center;
+            flex: 1 0 180px;
+            font-size: 16px;
+            font-family: sans-serif;
+            transition: 0.3s;
+            color: #1e2834;
+            cursor: pointer;
+            z-index: 1;
+            padding: 5px 10px;
+        }
+
+            .opt.activated {
+                color: white;
+                cursor: auto;
+            }
+
+        .handle.one {
+            left: 0px;
+        }
+
+        .handle.two {
+            left: 50%;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        #tab-one,
+        #tab-two {
+            margin-top: 20px;
+            width: 360px;
+            height: 200px;
+            padding: 20px;
+            background: yellow;
+            box-sizing: border-box;
+        }
+
+        #tab-two {
+            background: lime;
+        }
+
+        .my-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 360px;
+            height: 32px;
+            box-sizing: border-box;
+            border-radius: 16px;
+            background: transparent;
+            border: 1px solid #1e2834;
+        }
+
+        .my-handle {
+            position: absolute;
+            box-sizing: border-box;
+            width: 180px;
+            height: 32px;
+            border-radius: 16px;
+            background: #1e2834;
+            border: 1px solid #1e2834;
+            transition: 0.5s;
+            left: 0;
+            z-index: 0;
+        }
+
+        .myopt {
+            text-align: center;
+            flex: 1 0 180px;
+            font-size: 16px;
+            font-family: sans-serif;
+            transition: 0.3s;
+            color: #1e2834;
+            cursor: pointer;
+            z-index: 1;
+            padding: 5px 10px;
+        }
+        .myopt.activatedx {
+            color: white;
+            cursor: auto;
+        }
+
+        .my-handle.orders {
+            left: 0px;
+        }
+
+        .my-handle.subscriptions {
+            left: 50%;
+        }
+
+/*        #orders-tab,
+        #subscriptions-tab {
+            margin-top: 20px;
+            width: 360px;
+            height: 200px;
+            padding: 20px;
+            background: yellow;
+            box-sizing: border-box;
+        }
+
+        #subscriptions-tab {
+            background: lime;
+        }*/
+
+
+    </style>
+</head>
+<body>
+
+    <div>
+        <div class="my-container">
+            <div class='my-handle orders' id='myh'></div>
+            <div class="myopt activatedx" id="orders">Orders</div>
+            <div class="myopt" id="subscriptions">Subscriptions</div>
+        </div>
+        <div id="orders-tab">show orders</div>
+        <div id="subscriptions-tab" class="hide">show subscriptions</div>
+    </div>
+
+
+    <br />
+    <br />
+    <br />
+
+
+
+
+    <div>
+        <div class='switch-container'>
+            <div class='handle one' id='h'></div>
+            <div class='opt activated' id='one'>option 1</div>
+            <div class='opt' id='two'>option 2</div>
+        </div>
+        <div class='show' id='tab-one'>Something goes here - tab 1</div>
+        <div class='show' id='tab-two'>Something goes here - tab 2</div>
+        <script>
+
+            var myhndl = document.getElementById("myh");
+            var ordersTab = document.getElementById("orders-tab");
+            var subscriptionsTab = document.getElementById("subscriptions-tab");
+            var ordersopt = document.getElementById("orders");
+            var subscriptionsopt = document.getElementById("subscriptions");
+
+            ordersopt.onclick = function () {
+                subscriptionsopt.classList.remove("activatedx");
+                ordersopt.classList.add("activatedx");
+                ordersTab.classList.remove("hide");
+                myhndl.classList.remove("subscriptions");
+                myhndl.classList.add("orders");
+                subscriptionsTab.classList.add("hide");
+            };
+
+            subscriptionsopt.onclick = function () {
+                ordersopt.classList.remove("activatedx");
+                subscriptionsopt.classList.add("activatedx");
+                myhndl.classList.add("subscriptions");
+                myhndl.classList.remove("orders");
+                ordersTab.classList.add("hide");
+                subscriptionsTab.classList.remove("hide");
+            };
+
+
+
+
+
+
+            var hndl = document.getElementById("h");
+            var tab1 = document.getElementById("tab-one");
+            var tab2 = document.getElementById("tab-two");
+            var opt1 = document.getElementById("one");
+            var opt2 = document.getElementById("two");
+
+            opt1.onclick = function () {
+                opt2.classList.remove("activated");
+                opt1.classList.add("activated");
+                hndl.classList.remove("two");;
+                hndl.classList.add("one")
+                tab2.classList.add("hide");
+                tab1.classList.remove("hide");
+            };
+
+            opt2.onclick = function () {
+                opt1.classList.remove("activated");
+                opt2.classList.add("activated");
+                hndl.classList.add("one");
+                hndl.classList.add("two");
+                tab1.classList.add("hide");
+                tab2.classList.remove("hide");
+            };
+        </script>
+    </div>
+</body>
+</html>

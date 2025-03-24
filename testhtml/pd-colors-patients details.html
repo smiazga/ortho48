@@ -1,0 +1,399 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="../Content/fontawesome-free-5.15.4-web/css/all.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <style>
+
+        .search-input-container {
+            position: relative;
+            width: 350px;
+            color: #262626;
+            padding: 10px 20px 10px 20px;
+            border: 1px solid #d8d8d8;
+            border-radius: 8px;
+        }
+
+        .search-input {
+            width: 295px;
+            border: none;
+        }
+
+            .search-input:focus {
+                outline: none;
+            }
+
+        .search-terms {
+            top: 15px;
+            position: absolute;
+            right: 15px;
+            display: block;
+            z-index: 10;
+            color: #cad4d8;
+        }
+
+        .switch-check-archpatcolor:checked {
+            background-color: #4890a6;
+            border-color: #4890a6;
+        }
+
+        .orders-border {
+            border: 1px solid #d8d8d8;
+            border-radius: 8px;
+        }
+
+        /*need to fix for mobile*/
+        .orders-table {
+            overflow: auto;
+            border-collapse: separate;
+        }
+
+            .orders-table td, th {
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
+
+            .orders-table tr:last-child td {
+                border-bottom: none;
+                padding-bottom: 0px;
+            }
+
+
+        .table-header-arrows-container {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+        }
+
+        .table-header-arrow {
+            font-size: 9px !important;
+            font-weight: bold !important;
+            opacity: 0.6
+        }
+
+        .table-header-arrow-active {
+            opacity: 1
+        }
+
+        .circle-color {
+            background-color: #f3f7fa;
+            border: 1px solid #f3f7fa;
+        }
+
+        .btn-pd1 {
+            color: #fff;
+            background-color: #1a4363;
+            border-color: #1a4363;
+        }
+
+            .btn-pd1:hover {
+                color: #fff;
+                background-color: #25608d;
+                border-color: #1a4363;
+            }
+
+        .btn-outline-pd1 {
+            color: #1a4363;
+            border-color: #1a4363;
+        }
+
+            .btn-outline-pd1:hover {
+                color: #fff;
+                background-color: #1a4363;
+                border-color: #1a4363;
+            }
+
+        .switchtab-container {
+            position: relative;
+            /* width: 360px;
+            height: 32px;
+            border-radius: 16px;*/
+            width: 385px;
+            height: 50px;
+            border-radius: 30px;
+            background: transparent;
+            /*border: 1px solid #1e2834;*/
+            /*border: 1px solid #434d56;*/
+            border: 1px solid #d8d8d8;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .switchtab-handle {
+            position: absolute;
+            box-sizing: border-box;
+            width: 180px;
+            height: 32px;
+            border-radius: 16px;
+            /*demo*/
+            /*background: #1e2834;
+            border: 1px solid #1e2834;*/
+            background: #f7fbfe;
+            border: 1px solid #d8d8d8;
+            transition: 0.5s;
+            /*left: 0;*/
+            left: 10px;
+            z-index: 0;
+        }
+
+        .switchtab-opt {
+            text-align: center;
+            flex: 1 0 180px;
+            font-size: 16px;
+            font-family: sans-serif;
+            transition: 0.3s;
+            /*color: #1e2834;*/
+            color: #6b7581;
+            cursor: pointer;
+            z-index: 1;
+            padding: 5px 10px;
+        }
+
+            .switchtab-opt.activated {
+                /*color: white;*/
+                color: #434d56;
+                cursor: auto;
+            }
+
+        .switchtab-handle.orders {
+            /*left: 0px;*/
+            left: 10px;
+        }
+
+        .switchtab-handle.subscriptions {
+            left: 50%;
+        }
+
+        .switchtab-hide {
+            display: none;
+        }
+
+        .search-input-container {
+            position: relative;
+            width: 350px;
+            color: #262626;
+            padding: 10px 20px 10px 20px;
+            border: 1px solid #d8d8d8;
+            border-radius: 8px;
+        }
+
+        .search-input {
+            width: 295px;
+            border: none;
+        }
+
+            .search-input:focus {
+                outline: none;
+            }
+
+        .search-terms {
+            top: 15px;
+            position: absolute;
+            right: 15px;
+            display: block;
+            z-index: 10;
+            color: #cad4d8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="d-flex flex-column">
+
+            <div class="my-3">
+                <h4>Patients details</h4>
+                <a><i class="fas fa-arrow-left pe-1"></i>Go back</a>
+            </div>
+
+            <div class="orders-border p-4 my-3">
+                <div class="d-flex flex-row justify-content-between">
+                    <div><b>Account Info</b></div>
+                    <div>
+                        <button class="btn btn-outline-pd1">Edit</button>
+                    </div>
+                </div>
+                <form id="patientEdit" class="orders-borders p-3">
+                    <div class="row g-4 mb-3">
+                        <div class="col-12 col-md-6">
+                            <label for="firstName" class="form-label">First Name:</label>
+                            <input type="text" class="form-control" id="firstName" v-model="formData.data.FirstName" :readonly="!isEditing" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="lastName" class="form-label">Last Name:</label>
+                            <input type="text" class="form-control" id="lastName" v-model="formData.data.LastName" :readonly="!isEditing" />
+                        </div>
+                    </div>
+                    <div class="row g-4 mb-3">
+                        <div class="col-12 col-md-6">
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="text" class="form-control" id="email" v-model="formData.data.Email" readonly />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="phone" class="form-label">Phone:</label>
+                            <input type="text" class="form-control" id="phone" v-model="formData.data.Phone" :readonly="!isEditing" />
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <button type="button" class="btn btn-outline-pd1">Archive patient</button>
+                        </div>
+                    </div>
+                    <input type="hidden" v-model="formData.data.CustomerId" />
+                </form>
+            </div>
+
+            <div class="my-3">
+                <div class="switchtab-container">
+                    <div class='switchtab-handle orders' id='switchhandler'></div>
+                    <div class="switchtab-opt activated" id="orders">Orders</div>
+                    <div class="switchtab-opt" id="subscriptions">Subscriptions</div>
+                </div>
+            </div>
+
+            <div class="my-3">
+                <div id="orders-tab">
+                    <div class="d-flex justify-content-between">
+                        <div class="search-input-container">
+                            <input type="text" class="search-input" name="name" value="" placeholder="Order # or product" />
+                            <span class="search-terms fas fa-search"></span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="ms-3">
+                                <button class="btn btn-outline-pd1 dropdown-toggle" type="button" id="dropdownSortButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Filter by
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" @@click="sortOrders('OrderDateDESC')">Order data(New - old)</a></li>
+                                    <li><a class="dropdown-item" @@click="sortOrders('OrderDateASC')">Order data(Old - new)</a></li>
+                                    <li><a class="dropdown-item" @@click="sortOrders('OrderTotalASC')">Price (Low - high)</a></li>
+                                    <li><a class="dropdown-item" @@click="sortOrders('OrderTotalDESC')">Price (High - low)</a></li>
+                                </ul>
+                            </div>
+                            <div class="ms-3">
+                                <button class="btn btn-outline-pd1 dropdown-toggle" type="button" id="dropdownSortButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Sort by
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" @@click="sortOrders('OrderDateDESC')">Order data(New - old)</a></li>
+                                    <li><a class="dropdown-item" @@click="sortOrders('OrderDateASC')">Order data(Old - new)</a></li>
+                                    <li><a class="dropdown-item" @@click="sortOrders('OrderTotalASC')">Price (Low - high)</a></li>
+                                    <li><a class="dropdown-item" @@click="sortOrders('OrderTotalDESC')">Price (High - low)</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container my-4 p-0">
+                        <div class="d-flex flex-column orders-border p-4 my-3">
+                            <div>
+                                <table>
+                                    <tr>
+                                        <td class="pe-3">Last order</td>
+                                        <td class="px-3">Shipment ID</td>
+                                        <td class="px-3">Duration</td>
+                                        <td class="px-3">Status</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pe-3"><b>Feb 24th, 2025</b></td>
+                                        <td class="px-3"><b>#0010029</b></td>
+                                        <td class="px-3"><b>6 months</b></td>
+                                        <td class="px-3"><b>Inactive</b></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="mt-3" style="border-top:1px solid #d8d8d8">
+                                <div v-for="ol in o.OrderLines">
+                                    <div class="d-flex mt-4">
+                                        <div><img :src="ol.ProductUrl" alt="" width="190" height="190" /></div>
+                                        <div>
+                                            <div class="mb-3 ps-3">InflammaCORE Vanilla Chai with Pea Protein</div>
+                                            <div class="mb-3 ps-3">Size: 60 Capsules</div>
+                                            <div class="ps-3">
+                                                <span class="d-inline-block me-3"><b>2</b></span><span class="d-inline-block"><b>$10.25</b></span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="d-flex mt-3">
+                                        <div><img :src="ol.ProductUrl" alt="" width="190" height="190" /></div>
+                                        <div>
+                                            <div class="mb-3 ps-3">InflammaCORE Vanilla Chai with Pea Protein</div>
+                                            <div class="mb-3 ps-3">Size: 60 Capsules</div>
+                                            <div class="ps-3">
+                                                <span class="d-inline-block me-3"><b>2</b></span><span class="d-inline-block"><b>$10.25</b></span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="d-flex mt-3">
+                                        <div><img :src="ol.ProductUrl" alt="" width="190" height="190" /></div>
+                                        <div>
+                                            <div class="mb-3 ps-3">InflammaCORE Vanilla Chai with Pea Protein</div>
+                                            <div class="mb-3 ps-3">Size: 60 Capsules</div>
+                                            <div class="ps-3">
+                                                <span class="d-inline-block me-3"><b>2</b></span><span class="d-inline-block"><b>$10.25</b></span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4" style="border-top:1px solid #d8d8d8">
+                                <div class="d-flex justify-content-between mt-3">
+                                    <div><b>Subtotal</b></div>
+                                    <div><b>$20.50</b></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="subscriptions-tab" class="switchtab-hide">
+                <div class="search-input-container">
+                    <input type="text" class="search-input" name="name" value="" placeholder="Order # or product" />
+                    <span class="search-terms fas fa-search"></span>
+                </div>
+                <div class="d-flex orders-border p-4 my-3">
+                    <div class="circle-color rounded-circle p-3"><i class="fas fa-list"></i></div>
+                    <div>Tom Brady has no subscriptions</div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            var switchHandler = document.getElementById("switchhandler");
+            var ordersTab = document.getElementById("orders-tab");
+            var subscriptionsTab = document.getElementById("subscriptions-tab");
+            var ordersOpt = document.getElementById("orders");
+            var subscriptionsOpt = document.getElementById("subscriptions");
+
+            ordersOpt.onclick = function () {
+                subscriptionsOpt.classList.remove("activated");
+                ordersOpt.classList.add("activated");
+                ordersTab.classList.remove("switchtab-hide");
+                switchHandler.classList.remove("subscriptions");
+                switchHandler.classList.add("orders");
+                subscriptionsTab.classList.add("switchtab-hide");
+            };
+
+            subscriptionsOpt.onclick = function () {
+                ordersOpt.classList.remove("activated");
+                subscriptionsOpt.classList.add("activated");
+                switchHandler.classList.add("subscriptions");
+                switchHandler.classList.remove("orders");
+                ordersTab.classList.add("switchtab-hide");
+                subscriptionsTab.classList.remove("switchtab-hide");
+            };
+        </script>
+
+    </div>
+    </div>
+
+</body>
+</html>
