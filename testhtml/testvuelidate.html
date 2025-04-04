@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Vue 3 Vuelidate Example</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/@vuelidate/core@next"></script>
+    <script src="https://unpkg.com/@vuelidate/validators@next"></script>
+</head>
+<body>
+    <div id="app">
+        <form @submit.prevent="submitForm">
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" v-model="name" />
+                <span v-if="!$v.name.required">Name is required</span>
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" v-model="email" />
+                <span v-if="!$v.email.required">Email is required</span>
+                <span v-if="!$v.email.email">Email must be valid</span>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+        const { useVuelidate } = Vuelidate;
+        const { required, email } = VuelidateValidators;
+
+        createApp({
+            data() {
+                return {
+                    name: '',
+                    email: ''
+                };
+            },
+            validations() {
+                return {
+                    name: { required },
+                    email: { required, email }
+                };
+            },
+            setup() {
+                return { $v: useVuelidate() };
+            },
+            methods: {
+                submitForm() {
+                    this.$v.$touch();
+                    if (this.$v.$invalid) {
+                        alert('Form is invalid');
+                    } else {
+                        alert('Form is valid');
+                    }
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

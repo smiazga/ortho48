@@ -1,0 +1,65 @@
+﻿Certainly! If you want to validate the value of an input field in real-time using JavaScript, you can use the input event. Here's a simple example to demonstrate how you can achieve this:
+
+Copy the code
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Validation</title>
+    <style>
+        .valid {
+            border-color: green;
+        }
+
+        .invalid {
+            border-color: red;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="myInput" placeholder="Enter text">
+    <p id="message"></p>
+
+    <script>
+        document.getElementById('myInput').addEventListener('input', function(event) {
+            const input = event.target;
+            const message = document.getElementById('message');
+            const value = input.value;
+
+            // Example validation: Check if the input is a valid email
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailPattern.test(value)) {
+                input.classList.add('valid');
+                input.classList.remove('invalid');
+                message.textContent = 'Valid email address!';
+                message.style.color = 'green';
+            } else {
+                input.classList.add('invalid');
+                input.classList.remove('valid');
+                message.textContent = 'Invalid email address!';
+                message.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>
+
+Explanation:
+
+HTML Structure:
+
+An input field with the ID myInput.
+A paragraph element to display validation messages.
+
+CSS:
+
+Styles for valid and invalid input states.
+
+JavaScript:
+
+Adds an event listener to the input field for the input event.
+Validates the input value against a regular expression pattern for email addresses.
+Updates the input field's border color and the message text based on the validation result.
+
+Feel free to adapt the validation logic to suit your specific requirements!

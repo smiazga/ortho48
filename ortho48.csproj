@@ -1749,12 +1749,16 @@
     <Content Include="Content\fontawesome-free-5.15.4-web\webfonts\fa-brands-400.svg" />
     <Content Include="Content\fontawesome-free-5.15.4-web\webfonts\fa-regular-400.svg" />
     <Content Include="Content\fontawesome-free-5.15.4-web\webfonts\fa-solid-900.svg" />
+    <Content Include="Content\main-patientdirect.css" />
     <Content Include="Content\main.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Global.asax" />
+    <Content Include="testhtml\inputjsvalid.html" />
     <Content Include="testhtml\pd-colors-patients details.html" />
     <Content Include="testhtml\pd-colors-patients.html" />
     <Content Include="testhtml\pd-colors-table.html" />
+    <Content Include="testhtml\pd-navmenu.html" />
+    <Content Include="testhtml\popover-test.html" />
     <Content Include="testhtml\swtichtab-orders-colors.html" />
     <Content Include="testhtml\tablesort.html" />
     <Content Include="testhtml\switchtabtest.html" />
@@ -1770,6 +1774,7 @@
     <Content Include="Scripts\vue3.js" />
     <Content Include="Scripts\vue3.min.js" />
     <Content Include="Scripts\showNotificationModal.js" />
+    <Content Include="testhtml\testvuelidate.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
