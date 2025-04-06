@@ -1,0 +1,380 @@
+@using Newtonsoft.Json;
+
+@Html.Partial("~/VueComponents/Common/ModalNotification.cshtml")
+@Html.Partial("~/VueComponents/ManageProducts_org/ManageProductCard.cshtml")
+
+<div id="products">
+    <div class="products-general-container">
+
+        <div class="products-top-bar-heading display-4 my-3 productsdesktop">
+            Products
+        </div>
+
+        <div class="products-top-bar-info d-lg-flex flex-row align-items-center justify-content-between py-3 mb-4 productsdesktop">
+            <div class="products-top-bar-info-results">
+            </div>
+            <div class="d-flex align-items-center">
+                <input type="text" placeholder="product name" v-model="searchTerm" />
+                <div class="products-top-bar-info-active-filters filterpack">
+                    <template v-for="(name, index ) in filters" :key="index">
+                        <span class="products-top-bar-info-filter filterpack">
+                            &nbsp;{{ name }}&nbsp;<span class="products-top-info-filter-close filterpack" @@click="removeFilter(name)">
+                                x
+                            </span>
+                        </span>
+                    </template>
+                    <template v-for="(name, index ) in excludeFilters" :key="index">
+                        <span class="products-top-bar-info-filter filterpack">
+                            &nbsp;{{ name }}&nbsp;<span class="products-top-info-filter-close filterpack" @@click="removeExcludesFilter(name)">
+                                x
+                            </span>
+                        </span>
+                    </template>
+                </div>
+                <button class="products-top-bar-info-btn mr-5 px-2" id="clear_filters" @@click="clearFilters()">
+                    Clear all
+                    filters
+                </button>
+                @*<div class="products-top-bar-info-dropdown">
+                        <select class="products-top-bar-info-dropdown-wrapper" @@change="sortProductOrder($event)">
+                            <option value="NameASC">Sort By Name</option>
+                            <option value="NameDESC">Sort By Name Descending</option>
+                            <option value="PriceDESC">Sort By Price (High to Low)</option>
+                            <option value="PriceASC">Sort By Price (Low to High)</option>
+                        </select>
+                    </div>*@
+
+                <div>
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                        Sort By
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" @@click="sortProductOrder('NameASC')">Name (A-Z)</a></li>
+                        <li><a class="dropdown-item" @@click="sortProductOrder('NameDESC')">Name (Z-A)</a></li>
+                        <li><a class="dropdown-item" @@click="sortProductOrder('PriceDESC')">Price (Low - high)</a></li>
+                        <li><a class="dropdown-item" @@click="sortProductOrder('PriceASC')">Price (High - low)</a></li>
+                    </ul>
+                </div>
+
+
+                @*<div>
+                        <label>
+                            <input type="checkbox" id="showVisibile" value="Visible"
+                                   v-model="visibility" />
+                            Visible
+                        </label>
+                        <label>
+                            <input type="checkbox" id="showVisibile" value="Hidden"
+                                   v-model="visibility" />
+                            Hidden
+                        </label>
+                    </div>*@
+                @*see op nav bar if want to do hover instead, below follows op provider dashboard filter*@
+                <div class="ml-2">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                        Filter By
+                    </button>
+                    @*<div class="dropdown-menu">
+                            <div class="mx-2">
+                                <input class="mr-2" type="checkbox" id="visible_checkbox" value="Visible" v-model="visibility" />
+                                <label for="visible_checkbox" class="mr-2">Visible</label>
+                            </div>
+                            <div class="mx-2">
+                                <input class="mr-2" type="checkbox" id="hidden_checkbox" value="Hidden" v-model="visibility" />
+                                <label for="hidden_checkbox" class="mr-2">Hidden</label>
+                            </div>
+                        </div>*@
+                    <div class="dropdown-menu">
+                        <div class="mx-2">
+                            <input type="checkbox" id="visible_checkbox" value="Visible" v-model="visibility" />
+                            <label for="visible_checkbox" class="px-2">Visible</label>
+                        </div>
+                        <div class="mx-2">
+                            <input type="checkbox" id="hidden_checkbox" value="Hidden" v-model="visibility" />
+                            <label for="hidden_checkbox" class="px-2">Hidden</label>
+                        </div>
+                    </div>
+                    <div class="products-top-bar-info-active-filters filterpack">
+                        <template v-for="(name, index ) in visibility" :key="index">
+                            <span class="products-top-bar-info-filter filterpack">
+                                &nbsp;{{ name }}&nbsp;<span class="products-top-info-filter-close filterpack" @@click="removeFilter(name)">
+                                    x
+                                </span>
+                            </span>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br />
+
+        <div class="products-content-wrapper">
+            <div>
+                <div class="filters-wrapper d-none d-lg-block">
+                    <div class="products-filters">
+                        <div v-for="f in setProductFilters" class="product-filters-item pb-5">
+                            <div class="product-filters-item-heading pb-3">{{ f.label}}</div>
+                            <div class="product-filters-item-divider"></div>
+                            <div v-for="(filter, index) in FiltersData?.find((g) => g.CategoryName == f.category)?.FilterValues" :key="index">
+                                <template v-if="f.category !='InStock'">
+                                    <label>
+                                        <input type="checkbox" :id="filter.Name" :value="filter.Name" v-model="filters" />
+                                        {{ filter.Name }}
+                                    </label>
+                                </template>
+                                <template v-if="f.category =='InStock'">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" :id="filter.Name" :value="filter.Name" v-model="filters">
+                                        <label class="form-check-label" for="flexSwitchCheckChecked">In Stock</label>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                        @*<div class="product-filters-item pb-5">
+                                <div class="product-filters-item-heading pb-3">In Stock</div>
+                                <div class="product-filters-item-divider"></div>
+                                <div v-for="(filter, index) in FiltersData?.find((f) => f.CategoryName == 'InStock')?.FilterValues"
+                                     :key="index">
+                                    <label>
+                                        <input type="checkbox" :id="filter.Name" :value="filter.Name" v-model="filters" />
+                                        {{ filter.Name }}
+                                    </label>
+                                </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" :id="YesInStock" type="checkbox" role="switch" v-model="filters" :value="YesInStock">
+                                <label class="form-check-label" for="flexSwitchCheckChecked">Checked switch checkbox input</label>
+                            </div>
+                            </div>*@
+                        <div class="product-filters-item pb-5">
+                            <div class="product-filters-item-heading pb-3">Include Ingredients</div>
+                            <div class="product-filters-item-divider"></div>
+                            <input type="text" v-model="ingredientSearch" placeholder="Type at least 3 letters" class="product-filters-item-search">
+                            <div v-if="ingredientSearch.length > 2">
+                                <div v-for="(filter, index) in FiltersData?.find((f) => f.CategoryName == 'Ingredients')?.FilterValues.filter( x => x.Name.toLowerCase().includes(this.ingredientSearch.toLowerCase()))"
+                                     :key="index">
+                                    <label>
+                                        <input type="checkbox" :id="filter.Name" :value="filter.Name"
+                                               v-model="filters" />
+                                        {{ filter.Name.trim() }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-filters-item pb-5">
+                            <div class="product-filters-item-heading pb-3">Exclude Ingredients</div>
+                            <div class="product-filters-item-divider"></div>
+                            <input type="text" v-model="excludeIngredientSearch" placeholder="Type at least 3 letters" class="product-filters-item-search">
+                            <div v-if="excludeIngredientSearch.length > 2">
+                                <div v-for="(filter, index) in FiltersData?.find((f) => f.CategoryName == 'Ingredients')?.FilterValues.filter( x => x.Name.toLowerCase().includes(this.excludeIngredientSearch.toLowerCase()))"
+                                     :key="index">
+                                    <label>
+                                        <input type="checkbox" :id="filter.Name" :value="filter.Name"
+                                               v-model="excludeFilters" />
+                                        {{ filter.Name.trim() }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                Select All
+                <input type="checkbox" :checked="allSelected" @@change="toggleSelectAll" />
+                <div>count:{{ selectedCount }}</div>
+            </div>
+            <div class="products-container">
+                <template v-if="filteredAndSortedProducts.length === 0">
+                    No products found. Try chaning the filters or clearing the search.
+                </template>
+                <template v-else v-for="prod in filteredAndSortedProducts" :key="prod.Id">
+                    <div>
+                        <input type="checkbox" :id="'select-' + prod.Id" :value="prod.Id" v-model="selectedItems" @@click="checkVisiblity($event,prod.Id)" />
+                        @*<div v-if="selectedItems.includes(prod.Id)">Visible</div>
+                            <div v-else>Hidden</div>*@
+                        <div :id="'text-'+ prod.Id">{{ showSelectedItem(prod.Id) }}</div>
+                    </div>
+                    <manage-product-card :product="prod" />
+                </template>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <modal-notification ref="modalNotificationRef">
+        </modal-notification>
+    </div>
+
+</div>
+
+<script>
+    const products = Vue.createApp({
+        data() {
+            return {
+                Products:[],
+                FiltersData:[],
+                filters: [],
+                excludeFilters: [],
+                visibility:['Visible','Hidden'],
+                ingredientSearch: '',
+                excludeIngredientSearch: '',
+                productFilters: [],
+                searchTerm: '',
+                selectedItems: [],
+                currentSort: 'NameASC',
+                currentSortDir: 'ASC',
+                toggleIngred: true
+            }
+        },
+        computed: {
+            allSelected() {
+                return this.selectedItems.length === this.Products.length;
+            },
+            setProductFilters() {
+                this.productFilters.push({label:'Category',category: "MainCategories"});
+                this.productFilters.push({label:'Health Needs',category: "HealthCategories"});
+                this.productFilters.push({ label: 'Product Form', category: "AvailableIn" });
+                this.productFilters.push({ label: 'In Stock', category: "InStock" });
+                return this.productFilters;
+            },
+            selectedCount() {
+                return this.selectedItems.length;
+            },
+            filteredAndSortedProducts() {
+                return this.Products.filter(product => {
+                    const matchesFilter = this.filters.every((f) => product.AllCategories.includes(f));
+                    const excludesFilter = this.excludeFilters.every((f) => !product.AllCategories.includes(f));
+                    console.log("ef", excludesFilter);
+                    const matchesSearch = product.Name.toLowerCase().includes(this.searchTerm.toLowerCase());
+                    //if (this.visibility.length > 0) {
+                    //    let visibilityStatus = this.selectedItems.includes(product.Id) ? "Visible" : "Hidden";
+                    //    const matchesVisibility = this.visibility.some((f) => visibilityStatus.includes(f));
+                    //    return matchesFilter && matchesSearch && matchesVisibility;
+                    //}
+                    let visibilityStatus = this.selectedItems.includes(product.Id) ? "Visible" : "Hidden";
+                    const matchesVisibility = this.visibility.some((f) => visibilityStatus.includes(f));
+                    return matchesFilter && excludesFilter && matchesSearch && matchesVisibility;
+                }).sort((a, b) => {
+                    let modifier = 1;
+                    if (this.currentSortDir === 'DESC') modifier = -1;
+                    if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
+                    if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
+                    return 0;
+                });
+            },
+        },
+        methods: {
+            showSelectedItem(productId) {
+                return this.selectedItems.includes(productId) ? "Visible" : "Hidden";
+            },
+            removeFilter(item){
+                let itemIndex = this.filters.findIndex(c => c == item);
+                this.filters.splice(itemIndex, 1);
+            },
+            removeExcludesFilter(item) {
+                let itemIndex = this.excludeFilters.findIndex(c => c == item);
+                this.excludeFilters.splice(itemIndex, 1);
+            },
+            clearFilters() {
+                this.filters = [];
+            },
+            sortProductOrder: function (s) {
+                let sortName = s;
+                let sortDir = sortName.includes('ASC') ? 'ASC' : 'DESC';
+                sortName = sortName.substring(0, sortName.indexOf(sortDir));
+                this.currentSortDir = sortDir;
+                this.currentSort = sortName;
+            },
+            async toggleSelectAll() {
+                if (this.allSelected) {
+                    this.selectedItems = [];
+                } else {
+                    this.selectedItems = this.filteredAndSortedProducts.map(item => item.Id);
+                }
+                var result = await postFetchData('/sfapi/products/selectitems', this.selectedItems);
+
+                if (result.Status != "success") {
+                    this.showNotificationModal(result);
+                    console.log("Error: " + result.Message);
+                }
+
+                //try {
+                //    if (result.Status != "success") {
+                //        this.showNotificationModal(result);
+                //        console.log("Error: " + result.Message);
+                //    }
+                //} catch (e) {
+                //    this.showNotificationModal(result);
+                //    console.log("Error: " + result.Message);
+                //}
+            },
+            async checkVisiblity($event,productId) {
+                //let index = this.selectedItems.indexOf(productId);
+                //if (index > -1) {
+                //    this.selectedItems.splice(index, 1);
+                //} else {
+                //    this.selectedItems.push(productId);
+                //}
+                var checkbox = $event.target;
+                var isChecked = checkbox.checked;
+                var prodId = productId;
+                var result;
+                if (isChecked) {
+                    var result = await postFetchData('/sfapi/products/selectitem', prodId);
+                } else if (isChecked == false) {
+                    var result = await deleteFetch('/sfapi/products/selectitem', prodId);
+                }
+
+                 if (result.Status != "success") {
+                        this.showNotificationModal(result);
+                        console.log("Error: " + result.Message);
+                 }
+
+                //try {
+                //    if (result.Status != "success") {
+                //        this.showNotificationModal(result);
+                //        console.log("Error: " + result.Message);
+                //    }
+                //} catch (e) {
+                //    this.showNotificationModal(result);
+                //    console.log("Error: " + result.Message);
+                //}
+
+            },
+            showNotificationModal(resultNotification) {
+                const modalNotificationComponent = this.$refs.modalNotificationRef;
+                if (modalNotificationComponent) {
+                    if (resultNotification == undefined) {
+                        modalNotificationComponent.notificationDisplay('error', '');
+                    }
+                    else if (resultNotification.Status == "failed") {
+                        modalNotificationComponent.notificationDisplay('error', resultNotification.Message);
+                    }
+                    else if (resultNotification.Status == "success") {
+                        modalNotificationComponent.notificationDisplay('info', resultNotification.Message);
+                    }
+                }
+            }
+        },
+        created: function() {
+            this.Products = @Html.Raw(JsonConvert.SerializeObject(Model.ProductsList));
+            this.FiltersData = @Html.Raw(JsonConvert.SerializeObject(Model.FiltersList));
+            this.selectedItems = @Html.Raw(JsonConvert.SerializeObject(Model.SelectItemsList));
+        },
+        mounted: function () {
+            if (this.selectedItems != null) {
+                this.selectedItems.forEach((item) => {
+                    const checkbox = document.getElementById('select-' + item);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                        this.showSelectedItem(item);
+                    }
+                });
+            }
+        }
+    });
+    products.component("manage-product-card", manageProductCard);
+    products.component("modal-notification", modalNotification)
+    products.mount('#products');
+</script>

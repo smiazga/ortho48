@@ -10,6 +10,6 @@
         public string MainCategories { get; set; }
         public string AllCategories { get; set; }
         public decimal Price { get; set; }
-        public bool Favorite { get; set; }
+        public bool Hidden { get; set; }
     }
 }

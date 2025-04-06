@@ -16,7 +16,7 @@ namespace ortho48.Controllers
             ProductsManager productsManager = new ProductsManager();
             productsViewModel.ProductsList = productsManager.GetAllProducts();
             productsViewModel.FiltersList = productsManager.GetAllFilters();
-            productsViewModel.SelectItemsList = productsManager.GetAllSelectItems();
+            productsViewModel.HiddenItemsList = productsManager.GetAllSelectItems();
 
             return View(TemplateName, productsViewModel);
         }

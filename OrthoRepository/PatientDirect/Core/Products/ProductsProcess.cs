@@ -7,9 +7,9 @@ namespace ortho48.OrthoRepository.PatientDirect.Core.Products
     {
         private static readonly List<Product> AllProducts = new List<Product>()
         {
-            new Product { Id=121,Name="4Sight",ProductUrl="/4sight/557120/",Sku="557120",ImageUrl="https://preprod.orthopacks.com/images/default-source/products/557120.tmb-thumb190.png?Culture=en&sfvrsn=3b3dc36d_7",MainCategories="Specialty Applications", AllCategories="Specialty Applications|Antioxidant Support|Eye Health|Ginkgo biloba Leaf Extract |Lipoic Acid|Lutein|Lycopene|N-Acetyl-L-Cysteine USP|Quercetin|Taurine|Zeaxanthin|Zinc |Capsule" },
-            new Product { Id=137,Name="Alpha Base Capsules w/ Iron",ProductUrl="/alpha-base-capsules-w/-iron/",Sku="151240",ImageUrl="https://preprod.orthopacks.com/images/default-source/products/151240.tmb-thumb190.png?Culture=en&sfvrsn=9f536c33_7",MainCategories="Essential Vitamins|Essential Health", AllCategories="Essential Vitamins|Essential Health|General Wellness|Multivitamins|Boron |Choline|Chromium |Copper |Folic Acid|Inositol|Iodine |Iron|Lipoic Acid|Lutein|Lycopene|Magnesium|Manganese |Mixed Tocopherols|Molybdenum |Niacin |Pantothenic Acid |Potassium|Riboflavin |Rutin|Selenium  |Thiamine |Vanadyl Sulfate|Vitamin A |Vitamin B12 |Vitamin B6 |Vitamin C |Vitamin D3 (as Cholecalciferol)|Vitamin E|Vitamin K (as Phytonadione)|Zinc |Capsule" },
-            new Product { Id=157,Name="Cardio B",ProductUrl="/cardio-b/cardio-b/546060/",Sku="546060",ImageUrl="https://preprod.orthopacks.com/images/default-source/products/546060.tmb-thumb190.png?Culture=en&sfvrsn=46e6c73f_7",MainCategories="Cardiovascular Health|Essential Vitamins|Essential Health", AllCategories="Cardiovascular Health|Essential Vitamins|Essential Health|Capsule" }
+            new Product { Id=121,Name="4Sight",ProductUrl="/4sight/557120/",Sku="557120",ImageUrl="https://preprod.orthopacks.com/images/default-source/products/557120.tmb-thumb190.png?Culture=en&sfvrsn=3b3dc36d_7",MainCategories="Specialty Applications", AllCategories="Specialty Applications|Antioxidant Support|Eye Health|Ginkgo biloba Leaf Extract |Lipoic Acid|Lutein|Lycopene|N-Acetyl-L-Cysteine USP|Quercetin|Taurine|Zeaxanthin|Zinc |Capsule |InStock", Hidden = true, Price=4.50m },
+            new Product { Id=137,Name="Alpha Base Capsules w/ Iron",ProductUrl="/alpha-base-capsules-w/-iron/",Sku="151240",ImageUrl="https://preprod.orthopacks.com/images/default-source/products/151240.tmb-thumb190.png?Culture=en&sfvrsn=9f536c33_7",MainCategories="Essential Vitamins|Essential Health", AllCategories="Essential Vitamins|Essential Health|General Wellness|Multivitamins|Boron |Choline|Chromium |Copper |Folic Acid|Inositol|Iodine |Iron|Lipoic Acid|Lutein|Lycopene|Magnesium|Manganese |Mixed Tocopherols|Molybdenum |Niacin |Pantothenic Acid |Potassium|Riboflavin |Rutin|Selenium  |Thiamine |Vanadyl Sulfate|Vitamin A |Vitamin B12 |Vitamin B6 |Vitamin C |Vitamin D3 (as Cholecalciferol)|Vitamin E|Vitamin K (as Phytonadione)|Zinc |Capsule |InStock", Hidden = true, Price = 5.50m },
+            new Product { Id=157,Name="Cardio B",ProductUrl="/cardio-b/cardio-b/546060/",Sku="546060",ImageUrl="https://preprod.orthopacks.com/images/default-source/products/546060.tmb-thumb190.png?Culture=en&sfvrsn=46e6c73f_7",MainCategories="Cardiovascular Health|Essential Vitamins|Essential Health", AllCategories="Cardiovascular Health|Essential Vitamins|Essential Health|Capsule", Hidden = false, Price =3.50m }
         };
 
         private static readonly List<Filter> AllFilters = new List<Filter>()
@@ -86,6 +86,25 @@ namespace ortho48.OrthoRepository.PatientDirect.Core.Products
                     new FilterValue() { Name = "Iron" },
                     new FilterValue() { Name = "Artichoke Leaf Extract " },
                     new FilterValue() { Name = "Bentonite" }
+                }
+            },
+            new Filter
+            {
+                CategoryName ="ExcludeIngredients",
+                FilterValues = new List<FilterValue>()
+                {
+                    new FilterValue() { Name = "5-HTP" },
+                    new FilterValue() { Name = "Iron" },
+                    new FilterValue() { Name = "Artichoke Leaf Extract " },
+                    new FilterValue() { Name = "Bentonite" }
+                }
+            },
+            new Filter
+            {
+                CategoryName ="InStock",
+                FilterValues = new List<FilterValue>()
+                {
+                    new FilterValue() { Name = "InStock" }
                 }
             }
         };

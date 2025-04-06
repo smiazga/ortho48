@@ -1895,9 +1895,9 @@
     <Content Include="VueComponents\web.config" />
     <Content Include="VueComponents\Cruds\CrudsView.cshtml" />
     <Content Include="VueComponents\Cruds\CreateEditCrudForm.cshtml" />
-    <Content Include="VueComponents\ManageProducts\ManageProductsView.cshtml" />
+    <Content Include="VueComponents\ManageProducts_org\ManageProductsView.cshtml" />
     <Content Include="VueComponents\Common\ModalNotification.cshtml" />
-    <Content Include="VueComponents\ManageProducts\ManageProductCard.cshtml" />
+    <Content Include="VueComponents\ManageProducts_org\ManageProductCard.cshtml" />
     <Content Include="VueComponents\Products\ProductsView.cshtml" />
     <Content Include="Views\Products\Index.cshtml" />
     <Content Include="VueComponents\Products\ProductCard.cshtml" />
@@ -1905,6 +1905,8 @@
     <Content Include="VueComponents\ManagePatients\ManagePatientsView.cshtml" />
     <Content Include="VueComponents\ManagePatients\CreatePatient.cshtml" />
     <Content Include="VueComponents\ManagePatients\PatientDetails.cshtml" />
+    <Content Include="VueComponents\ManageProducts\ManageProductsView.cshtml" />
+    <Content Include="VueComponents\ManageProducts\ManageProductCard.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

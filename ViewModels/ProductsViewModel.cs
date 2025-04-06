@@ -9,6 +9,6 @@ namespace ortho48.ViewModels
         public List<Product> ProductsList { get; set; } = new List<Product>();
 
         public List<Filter> FiltersList { get; set; } = new List<Filter>();
-        public List<int> SelectItemsList { get; set; } = new List<int>();
+        public List<int> HiddenItemsList { get; set; } = new List<int>();
     }
 }
