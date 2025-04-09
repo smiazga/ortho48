@@ -255,7 +255,6 @@
         },
         methods: {
             showSelectedItem(visibility) {
-
                 this.selectedItems.forEach(item => {
                     if (visibility == "Visible") {
                         let updateProduct = this.Products.find(x => x.ProductId == item);
@@ -263,10 +262,10 @@
                             updateProduct.Hidden = false;
                             let originalHiddenProduct = this.HiddenItems.includes(item);
                             if (originalHiddenProduct == true) {
-                                let trackUpdateProduct = this.selectedPendingChanges.find(x => x.prodId == item);
+                                let trackUpdateProduct = this.selectedPendingChanges.find(x => x.ProductId == item);
                                 if (trackUpdateProduct) {
                                     trackUpdateProduct.hidden = false;
-                                    let index = this.selectedPendingChanges.findIndex(x => x.prodId == item);
+                                    let index = this.selectedPendingChanges.findIndex(x => x.ProductId == item);
                                     if (index > -1) {
                                         this.selectedPendingChanges.splice(index, 1);
                                     }
@@ -281,7 +280,7 @@
                             }
                             else {
                                 //remove from selectedpendingchanges since it was already visible
-                                let index = this.selectedPendingChanges.findIndex(x => x.prodId == item);
+                                let index = this.selectedPendingChanges.findIndex(x => x.ProductId == item);
                                 if (index > -1) {
                                     this.selectedPendingChanges.splice(index, 1);
                                 }
@@ -294,10 +293,10 @@
                             updateProduct.Hidden = true;
                             let originalHiddenProduct = this.HiddenItems.includes(item);
                             if (originalHiddenProduct == false) {
-                                let trackUpdateProduct = this.selectedPendingChanges.find(x => x.prodId == item);
+                                let trackUpdateProduct = this.selectedPendingChanges.find(x => x.ProductId == item);
                                 if (trackUpdateProduct) {
                                     trackUpdateProduct.hidden = true;
-                                    let index = this.selectedPendingChanges.findIndex(x => x.prodId == item);
+                                    let index = this.selectedPendingChanges.findIndex(x => x.ProductId == item);
                                     if (index > -1) {
                                         this.selectedPendingChanges.splice(index, 1);
                                     }
@@ -312,7 +311,7 @@
                             }
                             else {
                                 //remove from selectedpendingchanges since it was already visible
-                                let index = this.selectedPendingChanges.findIndex(x => x.prodId == item);
+                                let index = this.selectedPendingChanges.findIndex(x => x.ProductId == item);
                                 if (index > -1) {
                                     this.selectedPendingChanges.splice(index, 1);
                                 }
@@ -325,20 +324,17 @@
             cancelSelected() {
                 //foreach doesn't seem to work correctly may shift index so for loop in reverse may help
                 for (let i = this.selectedPendingChanges.length - 1; i >= 0; i--) {
-                    var originalHiddenProduct = this.HiddenItems.includes(this.selectedPendingChanges[i].prodId);
-                    if (originalHiddenProduct == true && this.selectedPendingChanges[i].hidden == false)
-                    {
-                        var updateProduct = this.Products.find(x => x.ProductId === this.selectedPendingChanges[i].prodId);
+                    var originalHiddenProduct = this.HiddenItems.includes(this.selectedPendingChanges[i].ProductId);
+                    if (originalHiddenProduct == true && this.selectedPendingChanges[i].Hidden == false) {
+                        var updateProduct = this.Products.find(x => x.ProductId === this.selectedPendingChanges[i].ProductId);
                         if (updateProduct) {
                             updateProduct.Hidden = true;
                         }
-                        console.log("y", this.selectedPendingChanges[i].prodId);
                         this.selectedPendingChanges.splice(i, 1);
 
                     }
-                    else if (originalHiddenProduct == false && this.selectedPendingChanges[i].hidden == true) {
-                        console.log("y", this.selectedPendingChanges[i].prodId);
-                        var updateProduct = this.Products.find(x => x.ProductId === this.selectedPendingChanges[i].prodId);
+                    else if (originalHiddenProduct == false && this.selectedPendingChanges[i].Hidden == true) {
+                        var updateProduct = this.Products.find(x => x.ProductId === this.selectedPendingChanges[i].ProductId);
                         if (updateProduct) {
                             updateProduct.Hidden = false;
                         }
