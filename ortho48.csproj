@@ -1808,6 +1808,7 @@
     <Compile Include="OrthoRepository\PatientDirect\Core\Patients\PatientInfo.cs" />
     <Compile Include="OrthoRepository\PatientDirect\Core\Patients\PatientProcess.cs" />
     <Compile Include="OrthoRepository\PatientDirect\Core\Products\Filter.cs" />
+    <Compile Include="OrthoRepository\PatientDirect\Core\Products\HiddenId.cs" />
     <Compile Include="OrthoRepository\PatientDirect\Core\Products\Product.cs" />
     <Compile Include="OrthoRepository\PatientDirect\Core\Products\ProductsProcess.cs" />
     <Compile Include="OrthoRepository\PatientDirect\Core\Result.cs" />
@@ -1817,7 +1818,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\CrudsViewModel.cs" />
     <Compile Include="ViewModels\ManagePatientsViewModel.cs" />
-    <Compile Include="ViewModels\ProductsViewModel.cs" />
+    <Compile Include="ViewModels\ManageProductsViewModel.cs" />
     <Content Include="VueComponents\Home\vuelidate-form.cshtml" />
     <Content Include="VueComponents\Home\vuelidate-form2.cshtml" />
     <Content Include="VueComponents\ManagePatients\EditPatient - Copy.cshtml" />

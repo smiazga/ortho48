@@ -10,13 +10,13 @@ namespace ortho48.Controllers
         public string Message { get; set; } = "Manage Products Test";
         public ActionResult Index()
         {
-            ProductsViewModel productsViewModel = new ProductsViewModel();
+            ManageProductsViewModel productsViewModel = new ManageProductsViewModel();
             productsViewModel.Message = Message;
 
             ProductsManager productsManager = new ProductsManager();
             productsViewModel.ProductsList = productsManager.GetAllProducts();
             productsViewModel.FiltersList = productsManager.GetAllFilters();
-            productsViewModel.HiddenItemsList = productsManager.GetAllSelectItems();
+            productsViewModel.HiddenProductIdsList = productsManager.GetHiddenIdsList();
 
             return View(TemplateName, productsViewModel);
         }

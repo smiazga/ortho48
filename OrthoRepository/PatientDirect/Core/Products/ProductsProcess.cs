@@ -7,9 +7,15 @@ namespace ortho48.OrthoRepository.PatientDirect.Core.Products
     {
         private static readonly List<Product> AllProducts = new List<Product>()
         {
-            new Product { Id=121,Name="4Sight",ProductUrl="/4sight/557120/",Sku="557120",ImageUrl="https://preprod.orthopacks.com/images/default-source/products/557120.tmb-thumb190.png?Culture=en&sfvrsn=3b3dc36d_7",MainCategories="Specialty Applications", AllCategories="Specialty Applications|Antioxidant Support|Eye Health|Ginkgo biloba Leaf Extract |Lipoic Acid|Lutein|Lycopene|N-Acetyl-L-Cysteine USP|Quercetin|Taurine|Zeaxanthin|Zinc |Capsule |InStock", Hidden = true, Price=4.50m },
-            new Product { Id=137,Name="Alpha Base Capsules w/ Iron",ProductUrl="/alpha-base-capsules-w/-iron/",Sku="151240",ImageUrl="https://preprod.orthopacks.com/images/default-source/products/151240.tmb-thumb190.png?Culture=en&sfvrsn=9f536c33_7",MainCategories="Essential Vitamins|Essential Health", AllCategories="Essential Vitamins|Essential Health|General Wellness|Multivitamins|Boron |Choline|Chromium |Copper |Folic Acid|Inositol|Iodine |Iron|Lipoic Acid|Lutein|Lycopene|Magnesium|Manganese |Mixed Tocopherols|Molybdenum |Niacin |Pantothenic Acid |Potassium|Riboflavin |Rutin|Selenium  |Thiamine |Vanadyl Sulfate|Vitamin A |Vitamin B12 |Vitamin B6 |Vitamin C |Vitamin D3 (as Cholecalciferol)|Vitamin E|Vitamin K (as Phytonadione)|Zinc |Capsule |InStock", Hidden = true, Price = 5.50m },
-            new Product { Id=157,Name="Cardio B",ProductUrl="/cardio-b/cardio-b/546060/",Sku="546060",ImageUrl="https://preprod.orthopacks.com/images/default-source/products/546060.tmb-thumb190.png?Culture=en&sfvrsn=46e6c73f_7",MainCategories="Cardiovascular Health|Essential Vitamins|Essential Health", AllCategories="Cardiovascular Health|Essential Vitamins|Essential Health|Capsule", Hidden = false, Price =3.50m }
+            new Product { ProductId=121,Name="4Sight",ImageUrl="https://preprod.orthopacks.com/images/default-source/products/557120.tmb-thumb190.png?Culture=en&sfvrsn=3b3dc36d_7",MainCategories="Specialty Applications", AllCategories="Specialty Applications|Antioxidant Support|Eye Health|Ginkgo biloba Leaf Extract |Lipoic Acid|Lutein|Lycopene|N-Acetyl-L-Cysteine USP|Quercetin|Taurine|Zeaxanthin|Zinc |Capsule |InStock",
+                Hidden =true,SortPrice=5.25m, SortSize=90, SizePriceList = new List<string>() { "90 CT: $5.25","120 CT: $4.25"}
+            },
+            new Product { ProductId=137,Name="Alpha Base Capsules w/ Iron",ImageUrl="https://preprod.orthopacks.com/images/default-source/products/151240.tmb-thumb190.png?Culture=en&sfvrsn=9f536c33_7",MainCategories="Essential Vitamins|Essential Health", AllCategories="Essential Vitamins|Essential Health|General Wellness|Multivitamins|Boron |Choline|Chromium |Copper |Folic Acid|Inositol|Iodine |Iron|Lipoic Acid|Lutein|Lycopene|Magnesium|Manganese |Mixed Tocopherols|Molybdenum |Niacin |Pantothenic Acid |Potassium|Riboflavin |Rutin|Selenium  |Thiamine |Vanadyl Sulfate|Vitamin A |Vitamin B12 |Vitamin B6 |Vitamin C |Vitamin D3 (as Cholecalciferol)|Vitamin E|Vitamin K (as Phytonadione)|Zinc |Capsule |InStock",
+                Hidden = true, SortPrice=5.50m, SortSize=60, SizePriceList = new List<string>() { "60 CT: $5.50","90 CT: $6.25","120 CT: $4.25"}
+            },
+            new Product { ProductId=157,Name="Cardio B",ImageUrl="https://preprod.orthopacks.com/images/default-source/products/546060.tmb-thumb190.png?Culture=en&sfvrsn=46e6c73f_7",MainCategories="Cardiovascular Health|Essential Vitamins|Essential Health", AllCategories="Cardiovascular Health|Essential Vitamins|Essential Health|Capsule",
+                Hidden = false,SortPrice=4.25m, SortSize=120, SizePriceList = new List<string>() { "120 CT: $4.25"}
+            }
         };
 
         private static readonly List<Filter> AllFilters = new List<Filter>()
@@ -109,7 +115,7 @@ namespace ortho48.OrthoRepository.PatientDirect.Core.Products
             }
         };
 
-        private static readonly string SelectItems = "121|137|";
+        private static string HiddenIds = "121|137|";
 
         public List<Product> GetAllProducts()
         {
@@ -121,10 +127,28 @@ namespace ortho48.OrthoRepository.PatientDirect.Core.Products
             return AllFilters;
         }
 
-        public List<int> GetSelectItems()
+        public List<int> GetHiddenIds()
         {
-            var result = SelectItems.Split('|').Where(x => int.TryParse(x, out _)).Select(int.Parse).ToList();
+            var result = HiddenIds.Split('|').Where(x => int.TryParse(x, out _)).Select(int.Parse).ToList();
             return result;
+        }
+
+        public void SaveHiddenItems(List<HiddenId> hiddenIds)
+        {
+            var hiddenIdsList = GetHiddenIds();
+            foreach (var item in hiddenIds)
+            {
+                if (item.Hidden && !hiddenIdsList.Contains(item.ProductId))
+                {
+                    hiddenIdsList.Add(item.ProductId);
+                }
+                else if (!item.Hidden)
+                {
+                    hiddenIdsList.Remove(item.ProductId);
+                }
+            }
+            HiddenIds = string.Join("|", hiddenIdsList);
+            //save hiddenIds to database
         }
     }
 }

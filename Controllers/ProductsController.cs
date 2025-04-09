@@ -13,7 +13,7 @@ namespace ortho48.Controllers
         public string Message { get; set; } = "Products Test";
         public ActionResult Index()
         {
-            ProductsViewModel productsViewModel = new ProductsViewModel();
+            ManageProductsViewModel productsViewModel = new ManageProductsViewModel();
             productsViewModel.Message = Message;
 
             ProductsManager productsManager = new ProductsManager();

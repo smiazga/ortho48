@@ -21,10 +21,10 @@ namespace ortho48.OrthoRepository.Services.Managers
             return filtersList;
         }
 
-        public List<int> GetAllSelectItems()
+        public List<int> GetHiddenIdsList()
         {
             ProductsProcess productsProcess = new ProductsProcess();
-            var visibleItems = productsProcess.GetSelectItems();
+            var visibleItems = productsProcess.GetHiddenIds();
             return visibleItems;
         }
 
@@ -34,6 +34,24 @@ namespace ortho48.OrthoRepository.Services.Managers
             try
             {
 
+                resultDTO.Status = "success";
+                return resultDTO;
+            }
+            catch (Exception ex)
+            {
+                resultDTO.Status = "failed";
+                resultDTO.Error = ex.Message.ToString();
+                return resultDTO;
+            }
+        }
+
+        public ResultDTO AddHiddenItems(List<HiddenId> hiddenIds)
+        {
+            ResultDTO resultDTO = new ResultDTO();
+            try
+            {
+                ProductsProcess productsProcess = new ProductsProcess();
+                productsProcess.SaveHiddenItems(hiddenIds);
                 resultDTO.Status = "success";
                 return resultDTO;
             }

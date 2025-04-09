@@ -1,4 +1,5 @@
 ﻿using ortho48.OrthoDTO.Responses;
+using ortho48.OrthoRepository.PatientDirect.Core.Products;
 using ortho48.OrthoRepository.Services.Managers;
 using System.Collections.Generic;
 using System.Web.Http;
@@ -12,6 +13,23 @@ namespace ortho48.Api.Controllers
         public ManageProductsApiController()
         {
             _productsManager = new ProductsManager();
+        }
+
+        [HttpGet]
+        [Route("hidden")]
+        public IHttpActionResult GetHiddenItems()
+        {
+            var hiddenIdsList = _productsManager.GetHiddenIdsList();
+            return Ok(hiddenIdsList);
+        }
+
+        [HttpPost]
+        [Route("hidden")]
+        public IHttpActionResult HiddenItems(List<HiddenId> hiddenIds)
+        {
+            var resultDTO = _productsManager.AddHiddenItems(hiddenIds);
+            resultDTO.Status = "success";
+            return Ok(resultDTO);
         }
 
         [HttpPost]
