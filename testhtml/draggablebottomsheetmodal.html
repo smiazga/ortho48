@@ -1,0 +1,183 @@
+﻿<!--https://www.geeksforgeeks.org/create-a-draggable-bottom-sheet-modal-in-html-css-javascript/-->
+<!-- index.html  -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+          content="width=device-width,
+                   initial-scale=1.0" />
+    <title>
+        Draggable Bottom Sheet Modal
+    </title>
+    <!--<link rel="stylesheet" href="style.css" />-->
+    <style>
+        /* style.css */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .show-modal {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .show-modal:hover {
+                background-color: #0056b3;
+            }
+
+        .bottom-sheet {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            box-shadow: 0px -3px 10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .sheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .drag-handle {
+            width: 30px;
+            height: 5px;
+            background-color: #fff;
+            border-radius: 10px;
+            cursor: grab;
+            margin: 0 auto;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .sheet-content {
+            padding: 20px;
+        }
+
+            .sheet-content h2 {
+                font-size: 24px;
+                margin-bottom: 10px;
+            }
+
+            .sheet-content p {
+                font-size: 16px;
+                line-height: 1.5;
+            }
+    </style>
+</head>
+
+<body>
+    <button class="show-modal">
+        Show Bottom Sheet
+    </button>
+    <div class="bottom-sheet">
+        <div class="sheet-header">
+            <div class="drag-handle"></div>
+            <button class="close-btn">
+                &times;
+            </button>
+        </div>
+        <div class="sheet-content">
+            <h2>
+                Bottom Sheet Modal
+            </h2>
+            <p>
+                This is a draggable bottom sheet
+                modal with different styling.
+                You can drag it up or down, close it,
+                and it works on touch-enabled devices.
+            </p>
+            <!-- Add your content here -->
+        </div>
+    </div>
+    <!--<script src="script.js"></script>-->
+    <script>
+        // script.js
+        const showModalBtn =
+            document.querySelector(".show-modal");
+        const bottomSheet =
+            document.querySelector(".bottom-sheet");
+        const dragHandle =
+            document.querySelector(".drag-handle");
+        const closeBtn =
+            document.querySelector(".close-btn");
+
+        let isDragging = false;
+        let startY, startBottom;
+
+        showModalBtn.addEventListener("click", () => {
+            bottomSheet.style.display = "block";
+            document.body.style.overflow = "hidden";
+            bottomSheet.style.bottom = "0";
+        });
+
+        dragHandle
+            .addEventListener("mousedown", startDragging);
+        closeBtn
+            .addEventListener("click", hideBottomSheet);
+
+        function startDragging(e) {
+            e.preventDefault();
+            isDragging = true;
+            startY = e.clientY;
+            startBottom =
+                parseInt(getComputedStyle(bottomSheet).bottom);
+
+            document.addEventListener("mousemove", drag);
+            document.addEventListener("mouseup", stopDragging);
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            const deltaY =
+                e.clientY - startY;
+            bottomSheet.style.bottom =
+                Math.max(startBottom - deltaY, 0) + "px";
+        }
+
+        function stopDragging() {
+            isDragging = false;
+            document
+                .removeEventListener("mousemove", drag);
+            document
+                .removeEventListener("mouseup", stopDragging);
+        }
+
+        function hideBottomSheet() {
+            bottomSheet.style.display = "none";
+            document.body.style.overflow = "auto";
+            bottomSheet.style.bottom = "-100%";
+        }
+    </script>
+</body>
+
+</html>

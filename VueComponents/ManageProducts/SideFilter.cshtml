@@ -1,0 +1,65 @@
+﻿<div class="accordion accordion-flush" id="accordionCategoryFilters">
+    <template v-for="(f,index) in setProductFilters" :key="index">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="'heading_' + index">
+                <template v-if="f.category == 'InStock'">
+                    <template v-for="(filter, index) in FiltersData?.find((g) => g.CategoryName == f.category)?.FilterValues" :key="index">
+                        <div class="accordion-switch">
+                            <div style="font-weight:normal;">{{f.label}}</div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" :id="filter.Name" :value="filter.Name" v-model="filters">
+                            </div>
+                        </div>
+                    </template>
+                </template>
+                <template v-else>
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse-' +index" aria-expanded="false" aria-controls="'collapse_'+ index">
+                        {{ f.label}}
+                    </button>
+                </template>
+            </h2>
+            <div :id="'collapse-' + index" class="accordion-collapse collapse" aria-labelledby="'heading_' + index" data-bs-parent="#accordionCategoryFilters">
+                <div class="accordion-body">
+                    <template v-if="f.category == 'Ingredients'">
+                        <input type="text" v-model="ingredientSearch" placeholder="Type at least 3 letters" class="product-filters-item-search">
+                        <div v-if="ingredientSearch.length > 2">
+                            <div v-for="(filter, index) in FiltersData?.find((f) => f.CategoryName == 'Ingredients')?.FilterValues.filter( x => x.Name.toLowerCase().includes(this.ingredientSearch.toLowerCase()))"
+                                 :key="index">
+                                <label>
+                                    <input type="checkbox" :id="filter.Name" :value="filter.Name"
+                                           v-model="filters" />
+                                    {{ filter.Name.trim() }}
+                                </label>
+                            </div>
+                        </div>
+                    </template>
+                    <template v-else-if="f.category == 'ExcludeIngredients'">
+                        <input type="text" v-model="excludeIngredientSearch" placeholder="Type at least 3 letters" class="product-filters-item-search">
+                        <div v-if="excludeIngredientSearch.length > 2">
+                            <div v-for="(filter, index) in FiltersData?.find((f) => f.CategoryName == 'ExcludeIngredients')?.FilterValues.filter( x => x.Name.toLowerCase().includes(this.excludeIngredientSearch.toLowerCase()))"
+                                 :key="index">
+                                <label>
+                                    <input type="checkbox" :id="filter.Name" :value="filter.Name"
+                                           v-model="excludeFilters" />
+                                    {{ filter.Name.trim() }}
+                                </label>
+                            </div>
+                        </div>
+                    </template>
+                    <template v-else-if="f.category != 'InStock'">
+                        <div v-for="(filter, index) in FiltersData?.find((g) => g.CategoryName == f.category)?.FilterValues" :key="index">
+                            <label>
+                                <input type="checkbox" :id="filter.Name" :value="filter.Name" v-model="filters" />
+                                {{ filter.Name }}
+                            </label>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </template>
+</div>
+
+<div class="my-3">
+    <button class="btn btn-outline-pd2 w-100" style="border-radius:8px;" @@click="clearFilters">Clear all filters</button>
+</div>

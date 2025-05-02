@@ -1,0 +1,51 @@
+﻿<div class="d-flex flex-row justify-content-between">
+    <div class="search-input-container">
+        <input type="text" class="search-input" placeholder="Search product name" v-model="searchTerm" />
+        <span class="search-terms fas fa-search"></span>
+    </div>
+    <div class="d-flex align-items-center">
+        <div class="ms-3">
+            <button class="btn btn-outline-pd2 dropdown-toggle" type="button" id="dropdownSortButton" data-bs-toggle="dropdown" aria-expanded="false">
+                Sort by
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" @@click="sortProductOrder('NameASC')">Name (A-Z)</a></li>
+                <li><a class="dropdown-item" @@click="sortProductOrder('NameDESC')">Name (Z-A)</a></li>
+                <li><a class="dropdown-item" @@click="sortProductOrder('SortPriceASC')">Price (Low - high)</a></li>
+                <li><a class="dropdown-item" @@click="sortProductOrder('SortPriceDESC')">Price (High - low)</a></li>
+                <li><a class="dropdown-item" @@click="sortProductOrder('SortSizeASC')">Bottle CT (Low - high)</a></li>
+                <li><a class="dropdown-item" @@click="sortProductOrder('SortSizeDESC')">Bottle CT (High - low)</a></li>
+            </ul>
+        </div>
+        <div class="ms-3">
+            <button class="btn btn-outline-pd2 dropdown-toggle" type="button" id="dropdownFilterButton" data-bs-toggle="dropdown" aria-expanded="false">
+                Filter by
+            </button>
+            <div class="dropdown-menu">
+                <div class="mx-2">
+                    <input type="checkbox" id="visible_checkbox" value="Visible" v-model="visibility" />
+                    <label for="visible_checkbox" class="px-2">Visible</label>
+                </div>
+                <div class="mx-2">
+                    <input type="checkbox" id="hidden_checkbox" value="Hidden" v-model="visibility" />
+                    <label for="hidden_checkbox" class="px-2">Hidden</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-flex justify-content-start flex-wrap my-3">
+    <template v-for="(name,index) in filters" :key="index">
+        <span class="manageproducts-filter-bar">&nbsp;{{ name }}&nbsp;<span class="" @@click="removeFilter(name)"> x </span></span>
+    </template>
+    <template v-for="(name,index) in excludeFilters" :key="index">
+        <span class="manageproducts-filter-bar-exclude">&nbsp;{{ name }}&nbsp;<span class="" @@click="removeExcludesFilter(name)"> x </span></span>
+    </template>
+    <template v-for="(name,index) in visibility" :key="index">
+        <span class="manageproducts-filter-bar-visibility">&nbsp;{{ name }}&nbsp;<span class="" @@click="removeVisibility(name)"> x </span></span>
+    </template>
+</div>
+
+<div class="my-5">
+    <div class="font-italic small">{{ selectedCount}} of {{filteredAndSortedProducts.length}} results</div>
+</div>

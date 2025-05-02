@@ -1,0 +1,52 @@
+﻿<div class="border-parent">
+    <template v-if="filteredAndSortedProducts.length === 0">
+        No products found. Try changing the filters or clearing the search.
+    </template>
+    <template v-else v-for="product in filteredAndSortedProducts" :key="product.Sku">
+        <div class="d-flex justify-content-between align-items-center py-2 manageproduct-border">
+            <div class="">
+                <input type="checkbox" :id="'select-' + product.Sku" :value="product.Sku" v-model="selectedItems" />
+            </div>
+            <div class="w-25">
+                <div><img :src="product.ImageUrl" alt="" width="90" height="90" /></div>
+            </div>
+            <div class=" w-100 p-3">
+                <div>{{ product.Name}}</div>
+                <div>{{ product.MainCategories }}</div>
+            </div>
+            <div class="w-50">
+                <template v-for="item in product.SizePriceList">
+                    <div>{{ item}}</div>
+                </template>
+            </div>
+            <div class="w-25">
+                <div v-if="product.Hidden">
+                    <div class="manageproducts-visible visible-hidden">Hidden</div>
+                </div>
+                <div v-else>
+                    <div class="manageproducts-visible">Visible</div>
+                </div>
+            </div>
+        </div>
+    </template>
+</div>
+
+<div v-if="selectedPendingChanges.length>0" class="managepatients-actionbar my-5">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="p-4">Pending changes({{selectedPendingChanges.length}})</div>
+        <div class="p-4">
+            <div class="d-flex">
+                <div>
+                    <button :disabled="isProcessing" class="btn btn-outline-pd1" @@click="cancelSelected">
+                        Cancel
+                    </button>
+                </div>
+                <div class="ms-3">
+                    <button :disabled="isProcessing" class="btn btn-outline-pd1" @@click="saveSelected">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

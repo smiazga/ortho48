@@ -1,0 +1,13 @@
+﻿
+<div class="d-flex flex-row justify-content-between my-3" style="background-color: #f7fbfe;padding:10px;border-radius:8px;">
+    <div><input id="selectall_checkbox" type="checkbox" @@change="toggleSelectAll($event)" /><label for="selectall_checkbox" class="px-2">Select all</label></div>
+    <div>
+        <span>Make selected: </span>
+        <span><a @@click="showSelectedItem('Visible')">Visible</a></span> |
+        <span><a @@click="showSelectedItem('Hidden')">Hidden</a></span>
+    </div>
+</div>
+
+<div class="my-5">
+    <div class="font-italic small">{{ selectedCount}} of {{filteredAndSortedProducts.length}} results</div>
+</div>

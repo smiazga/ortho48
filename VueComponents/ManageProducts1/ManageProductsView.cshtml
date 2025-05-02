@@ -1,0 +1,662 @@
+@using Newtonsoft.Json;
+
+@*@Html.Partial("~/VueComponents/Common/ModalNotification.cshtml")
+    @Html.Partial("~/VueComponents/ManageProducts/ManageProductCard.cshtml")*@
+
+<div id="products">
+    <div class="manageproducts-container">
+
+        <div class="my-3">
+            <h4>Manage Products</h4>
+            <div>Select products available to your patients</div>
+        </div>
+
+        <div class="d-flex align-items-start">
+            <div class="manageproductsfilters-wrapper overflow-auto">
+                <div class="accordion accordion-flush" id="accordionCategoryFilters">
+                    <template v-for="(f,index) in setProductFilters" :key="index">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="'heading_' + index">
+                                <template v-if="f.category == 'InStock'">
+                                    <template v-for="(filter, index) in FiltersData?.find((g) => g.CategoryName == f.category)?.FilterValues" :key="index">
+                                        <div class="accordion-switch">
+                                            <div style="font-weight:normal;">{{f.label}}</div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" :id="filter.Name" :value="filter.Name" v-model="filters">
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template v-else>
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse-' +index" aria-expanded="false" aria-controls="'collapse_'+ index">
+                                        {{ f.label}}
+                                    </button>
+                                </template>
+                            </h2>
+                            <div :id="'collapse-' + index" class="accordion-collapse collapse" aria-labelledby="'heading_' + index" data-bs-parent="#accordionCategoryFilters">
+                                <div class="accordion-body">
+                                    <template v-if="f.category == 'Ingredients'">
+                                        <input type="text" v-model="ingredientSearch" placeholder="Type at least 3 letters" class="product-filters-item-search">
+                                        <div v-if="ingredientSearch.length > 2">
+                                            <div v-for="(filter, index) in FiltersData?.find((f) => f.CategoryName == 'Ingredients')?.FilterValues.filter( x => x.Name.toLowerCase().includes(this.ingredientSearch.toLowerCase()))"
+                                                 :key="index">
+                                                <label>
+                                                    <input type="checkbox" :id="filter.Name" :value="filter.Name"
+                                                           v-model="filters" />
+                                                    {{ filter.Name.trim() }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template v-else-if="f.category == 'ExcludeIngredients'">
+                                        <input type="text" v-model="excludeIngredientSearch" placeholder="Type at least 3 letters" class="product-filters-item-search">
+                                        <div v-if="excludeIngredientSearch.length > 2">
+                                            <div v-for="(filter, index) in FiltersData?.find((f) => f.CategoryName == 'ExcludeIngredients')?.FilterValues.filter( x => x.Name.toLowerCase().includes(this.excludeIngredientSearch.toLowerCase()))"
+                                                 :key="index">
+                                                <label>
+                                                    <input type="checkbox" :id="filter.Name" :value="filter.Name"
+                                                           v-model="excludeFilters" />
+                                                    {{ filter.Name.trim() }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template v-else-if="f.category != 'InStock'">
+                                        <div v-for="(filter, index) in FiltersData?.find((g) => g.CategoryName == f.category)?.FilterValues" :key="index">
+                                            <label>
+                                                <input type="checkbox" :id="filter.Name" :value="filter.Name" v-model="filters" />
+                                                {{ filter.Name }}
+                                            </label>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="my-3">
+                    <button class="btn btn-outline-pd2 w-100" style="border-radius:8px;" @@click="clearFilters">Clear all filters</button>
+                </div>
+            </div>
+
+            <div class="w-100 mx-5">
+                <div class="d-flex flex-row justify-content-between my-3">
+                    <div class="search-input-container">
+                        <input type="text" class="search-input" placeholder="Search product name" v-model="searchTerm" />
+                        <span class="search-terms fas fa-search"></span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="ms-3">
+                            <button class="btn btn-outline-pd2 dropdown-toggle" type="button" id="dropdownSortButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                Sort by
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" @@click="sortProductOrder('NameASC')">Name (A-Z)</a></li>
+                                <li><a class="dropdown-item" @@click="sortProductOrder('NameDESC')">Name (Z-A)</a></li>
+                                <li><a class="dropdown-item" @@click="sortProductOrder('SortPriceASC')">Price (Low - high)</a></li>
+                                <li><a class="dropdown-item" @@click="sortProductOrder('SortPriceDESC')">Price (High - low)</a></li>
+                                <li><a class="dropdown-item" @@click="sortProductOrder('SortSizeASC')">Bottle CT (Low - high)</a></li>
+                                <li><a class="dropdown-item" @@click="sortProductOrder('SortSizeDESC')">Bottle CT (High - low)</a></li>
+                            </ul>
+                        </div>
+                        <div class="ms-3">
+                            <button class="btn btn-outline-pd2 dropdown-toggle" type="button" id="dropdownFilterButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                Filter by
+                            </button>
+                            <div class="dropdown-menu">
+                                <div class="mx-2">
+                                    <input type="checkbox" id="visible_checkbox" value="Visible" v-model="visibility" />
+                                    <label for="visible_checkbox" class="px-2">Visible</label>
+                                </div>
+                                <div class="mx-2">
+                                    <input type="checkbox" id="hidden_checkbox" value="Hidden" v-model="visibility" />
+                                    <label for="hidden_checkbox" class="px-2">Hidden</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-start flex-wrap my-3">
+                    <template v-for="(name,index) in filters" :key="index">
+                        <span class="manageproducts-filter-bar">&nbsp;{{ name }}&nbsp;<span class="" @@click="removeFilter(name)"> x </span></span>
+                    </template>
+                </div>
+
+                <div class="d-flex flex-row justify-content-between my-3" style="background-color: #f7fbfe;padding:10px;border-radius:8px;">
+                    <div><input id="selectall_checkbox" type="checkbox" @@change="toggleSelectAll($event)" /><label for="selectall_checkbox" class="px-2">Select all</label></div>
+                    <div>
+                        <span>Make selected: </span>
+                        <span><a @@click="showSelectedItem('Visible')">Visible</a></span> |
+                        <span><a @@click="showSelectedItem('Hidden')">Hidden</a></span>
+                    </div>
+                </div>
+
+                <div class="my-5">
+                    <div class="font-italic small">{{ selectedCount}} of {{filteredAndSortedProducts.length}} results</div>
+                </div>
+
+                <div class="border-parent">
+                    <template v-if="filteredAndSortedProducts.length === 0">
+                        No products found. Try chaning the filters or clearing the search.
+                    </template>
+                    <template v-else v-for="product in filteredAndSortedProducts" :key="product.ProductId">
+                        <div class="d-flex justify-content-between align-items-center py-2 manageproduct-border">
+                            <div class="">
+                                <input type="checkbox" :id="'select-' + product.ProductId" :value="product.ProductId" v-model="selectedItems" />
+                            </div>
+                            <div class="w-25">
+                                <div><img :src="product.ImageUrl" alt="" width="190" height="190" /></div>
+                            </div>
+                            <div class=" w-100 p-3">
+                                <div>{{ product.Name}}</div>
+                                <div>{{ product.MainCategories }}</div>
+                            </div>
+                            <div class="w-50">
+                                <template v-for="item in product.SizePriceList">
+                                    <div>{{ item}}</div>
+                                </template>
+                            </div>
+                            <div class="adjustcolumn w-25">
+                                <div v-if="product.Hidden">
+                                    <div class="manageproducts-visible visible-hidden">Hidden</div>
+                                </div>
+                                <div v-else>
+                                    <div class="manageproducts-visible">Visible</div>
+                                </div>
+                                @*<div :id="'visibility-' + product.Id" class="manageproducts-visible">Visible</div>*@
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div v-if="selectedPendingChanges.length>0" class="managepatients-actionbar my-5">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="p-4">Pending changes({{selectedPendingChanges.length}})</div>
+                        <div class="p-4">
+                            <div class="d-flex">
+                                <div>
+                                    <button class="btn btn-outline-pd1" @@click="cancelSelected">
+                                        Cancel
+                                    </button>
+                                </div>
+                                <div class="ms-3">
+                                    <button class="btn btn-outline-pd1" @@click="saveSelected">
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    const products = Vue.createApp({
+        data() {
+            return {
+                Products:[],
+                FiltersData:[],
+                filters: [],
+                excludeFilters: [],
+                visibility: ['Visible', 'Hidden'],
+                ingredientSearch: '',
+                excludeIngredientSearch: '',
+                productFilters: [],
+                searchTerm: '',
+                selectedItems: [],
+                currentSort: 'NameASC',
+                currentSortDir: 'ASC',
+                toggleIngred: true,
+                selectedPendingChanges: [],
+                HiddenItems: []
+            }
+        },
+        computed: {
+            //allSelected() {
+            //    if (this.filteredAndSortedProducts.length == 0) {
+            //        return this.selectedItems = [];
+            //    }
+            //    return  this.selectedItems.length === this.filteredAndSortedProducts.length;
+            //},
+            setProductFilters() {
+                this.productFilters.push({label:'Category',category: "MainCategories"});
+                this.productFilters.push({ label: 'Health Needs', category: "HealthCategories" });
+                this.productFilters.push({ label: 'Include Ingredients', category: "Ingredients" });
+                this.productFilters.push({ label: 'Exclude Ingredients', category: "ExcludeIngredients" });
+                this.productFilters.push({ label: 'Product Form', category: "AvailableIn" });
+                this.productFilters.push({ label: 'In Stock', category: "InStock" });
+
+                return this.productFilters;
+            },
+            selectedCount() {
+                return this.selectedItems.length;
+            },
+            filteredAndSortedProducts() {
+                return this.Products.filter(product => {
+                    const matchesFilter = this.filters.every((f) => product.AllCategories.includes(f));
+                    const excludesFilter = this.excludeFilters.every((f) => !product.AllCategories.includes(f));
+                    const matchesSearch = product.Name.toLowerCase().includes(this.searchTerm.toLowerCase());
+                    let visibilityStatus = product.Hidden ? "Hidden" : "Visible";
+                    const matchesVisibility = this.visibility.some((f) => visibilityStatus.includes(f));
+                    return matchesFilter && excludesFilter && matchesSearch && matchesVisibility;
+                }).sort((a, b) => {
+                    let modifier = 1;
+                    if (this.currentSortDir === 'DESC') modifier = -1;
+                    if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
+                    if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
+                    return 0;
+                });
+            },
+        },
+        methods: {
+            showSelectedItem(visibility) {
+                this.selectedItems.forEach(item => {
+                    if (visibility == "Visible") {
+                        let updateProduct = this.Products.find(x => x.ProductId == item);
+                        if (updateProduct && updateProduct.Hidden == true) {
+                            updateProduct.Hidden = false;
+                            let originalHiddenProduct = this.HiddenItems.includes(item);
+                            if (originalHiddenProduct == true) {
+                                let trackUpdateProduct = this.selectedPendingChanges.find(x => x.ProductId == item);
+                                if (trackUpdateProduct) {
+                                    trackUpdateProduct.hidden = false;
+                                    let index = this.selectedPendingChanges.findIndex(x => x.ProductId == item);
+                                    if (index > -1) {
+                                        this.selectedPendingChanges.splice(index, 1);
+                                    }
+                                }
+                                else {
+                                    let trackChange = {
+                                        ProductId: item,
+                                        Hidden: false
+                                    }
+                                    this.selectedPendingChanges.push(trackChange);
+                                }
+                            }
+                            else {
+                                //remove from selectedpendingchanges since it was already visible
+                                let index = this.selectedPendingChanges.findIndex(x => x.ProductId == item);
+                                if (index > -1) {
+                                    this.selectedPendingChanges.splice(index, 1);
+                                }
+                            }
+                        }
+                    }
+                    else if (visibility == "Hidden") {
+                        let updateProduct = this.Products.find(x => x.ProductId == item);
+                        if (updateProduct && updateProduct.Hidden == false) {
+                            updateProduct.Hidden = true;
+                            let originalHiddenProduct = this.HiddenItems.includes(item);
+                            if (originalHiddenProduct == false) {
+                                let trackUpdateProduct = this.selectedPendingChanges.find(x => x.ProductId == item);
+                                if (trackUpdateProduct) {
+                                    trackUpdateProduct.hidden = true;
+                                    let index = this.selectedPendingChanges.findIndex(x => x.ProductId == item);
+                                    if (index > -1) {
+                                        this.selectedPendingChanges.splice(index, 1);
+                                    }
+                                }
+                                else {
+                                    let trackChange = {
+                                        ProductId: item,
+                                        Hidden: true
+                                    }
+                                    this.selectedPendingChanges.push(trackChange);
+                                }
+                            }
+                            else {
+                                //remove from selectedpendingchanges since it was already visible
+                                let index = this.selectedPendingChanges.findIndex(x => x.ProductId == item);
+                                if (index > -1) {
+                                    this.selectedPendingChanges.splice(index, 1);
+                                }
+                            }
+                        }
+                    }
+                });
+                this.clearSelected();
+            },
+            cancelSelected() {
+                //foreach doesn't seem to work correctly may shift index so for loop in reverse may help
+                for (let i = this.selectedPendingChanges.length - 1; i >= 0; i--) {
+                    var originalHiddenProduct = this.HiddenItems.includes(this.selectedPendingChanges[i].ProductId);
+                    if (originalHiddenProduct == true && this.selectedPendingChanges[i].Hidden == false) {
+                        var updateProduct = this.Products.find(x => x.ProductId === this.selectedPendingChanges[i].ProductId);
+                        if (updateProduct) {
+                            updateProduct.Hidden = true;
+                        }
+                        this.selectedPendingChanges.splice(i, 1);
+
+                    }
+                    else if (originalHiddenProduct == false && this.selectedPendingChanges[i].Hidden == true) {
+                        var updateProduct = this.Products.find(x => x.ProductId === this.selectedPendingChanges[i].ProductId);
+                        if (updateProduct) {
+                            updateProduct.Hidden = false;
+                        }
+                        this.selectedPendingChanges.splice(i, 1);
+                    }
+                    this.clearSelected();
+                }
+            },
+            cancelSelected2() {
+                this.selectedPendingChanges.forEach(item => {
+                    var originalHiddenProduct = this.HiddenItems.includes(item.prodId);
+
+                    if (originalHiddenProduct == true && item.hidden == false) {
+                        //needs to go back to hidden , remove from selectedpendingchanges since it was already hidden and change product
+
+                        var updateProduct = this.Products.find(x => x.ProductId === item.prodId);
+                        if (updateProduct) {
+                            updateProduct.Hidden = true;
+                        }
+
+                        let index = this.selectedPendingChanges.findIndex(x => x.prodId === item.prodId);
+                        console.log("i", index);
+                        console.log("p", item.prodId);
+                        this.selectedPendingChanges.splice(index, 1);
+                        if (index > -1) {
+                            this.selectedPendingChanges.splice(index, 1);
+                        }
+                    }
+                    else if (originalHiddenProduct == false && item.hidden == true) {
+                        //needs to go back to visible , remove from selectedpendingchanges since it was already visible and change product
+                        let updateProduct = this.Products.find(x => x.ProductId == item.prodId);
+                        if (updateProduct) {
+                            updateProduct.Hidden = false;
+                        }
+
+                        let index = this.selectedPendingChanges.findIndex(x => x.prodId == item.prodId);
+                        if (index > -1) {
+                            this.selectedPendingChanges.splice(index, 1);
+                        }
+                    }
+                });
+                this.clearSelected();
+            },
+            async saveSelected() {
+                //find hidden update and go to database
+                //var newHidden = this.selectedPendingChanges.filter((x) => x.hidden == true);
+                var result = await postFetchData('/sfapi/products/hidden', this.selectedPendingChanges);
+                this.HiddenItems = await getFetch('/sfapi/products/hidden');
+                this.selectedPendingChanges = [];
+                this.clearSelected();
+            },
+            removeFilter(item){
+                let itemIndex = this.filters.findIndex(c => c == item);
+                this.filters.splice(itemIndex, 1);
+                this.clearSelected();
+            },
+            removeExcludesFilter(item) {
+                let itemIndex = this.excludeFilters.findIndex(c => c == item);
+                this.excludeFilters.splice(itemIndex, 1);
+                this.clearSelected();
+            },
+            clearFilters() {
+                this.filters = [];
+                this.clearSelected();
+            },
+            sortProductOrder: function (s) {
+                let sortName = s;
+                let sortDir = sortName.includes('ASC') ? 'ASC' : 'DESC';
+                sortName = sortName.substring(0, sortName.indexOf(sortDir));
+                this.currentSortDir = sortDir;
+                this.currentSort = sortName;
+            },
+            async toggleSelectAll($event) {
+
+                var checkbox = $event.target;
+                var isChecked = checkbox.checked;
+
+                if (isChecked) {
+                    this.selectedItems = this.filteredAndSortedProducts.map(item => item.ProductId);
+                } else {
+                    this.selectedItems = [];
+                }
+                //var result = await postFetchData('/sfapi/products/selectitems', this.selectedItems);
+
+                //if (result.Status != "success") {
+                //    this.showNotificationModal(result);
+                //    console.log("Error: " + result.Message);
+                //}
+
+                //try {
+                //    if (result.Status != "success") {
+                //        this.showNotificationModal(result);
+                //        console.log("Error: " + result.Message);
+                //    }
+                //} catch (e) {
+                //    this.showNotificationModal(result);
+                //    console.log("Error: " + result.Message);
+                //}
+            },
+            clearSelected() {
+                this.selectedItems = [];
+                //this.selectedPendingChanges = [];
+                $('#selectall_checkbox').prop('checked', false);
+            },
+            async checkVisiblity($event,productId) {
+                //let index = this.selectedItems.indexOf(productId);
+                //if (index > -1) {
+                //    this.selectedItems.splice(index, 1);
+                //} else {
+                //    this.selectedItems.push(productId);
+                //}
+                var checkbox = $event.target;
+                var isChecked = checkbox.checked;
+                var prodId = productId;
+                var result;
+                if (isChecked) {
+                    var result = await postFetchData('/sfapi/products/selectitem', prodId);
+                } else if (isChecked == false) {
+                    var result = await deleteFetch('/sfapi/products/selectitem', prodId);
+                }
+
+                 if (result.Status != "success") {
+                        this.showNotificationModal(result);
+                        console.log("Error: " + result.Message);
+                 }
+
+                //try {
+                //    if (result.Status != "success") {
+                //        this.showNotificationModal(result);
+                //        console.log("Error: " + result.Message);
+                //    }
+                //} catch (e) {
+                //    this.showNotificationModal(result);
+                //    console.log("Error: " + result.Message);
+                //}
+
+            },
+            showNotificationModal(resultNotification) {
+                const modalNotificationComponent = this.$refs.modalNotificationRef;
+                if (modalNotificationComponent) {
+                    if (resultNotification == undefined) {
+                        modalNotificationComponent.notificationDisplay('error', '');
+                    }
+                    else if (resultNotification.Status == "failed") {
+                        modalNotificationComponent.notificationDisplay('error', resultNotification.Message);
+                    }
+                    else if (resultNotification.Status == "success") {
+                        modalNotificationComponent.notificationDisplay('info', resultNotification.Message);
+                    }
+                }
+            }
+        },
+        created: function() {
+            this.Products = @Html.Raw(JsonConvert.SerializeObject(Model.ProductsList));
+            this.FiltersData = @Html.Raw(JsonConvert.SerializeObject(Model.FiltersList));
+            this.HiddenItems = @Html.Raw(JsonConvert.SerializeObject(Model.HiddenProductIdsList));
+        },
+        //mounted: function () {
+        //    if (this.selectedItems != null) {
+        //        this.selectedItems.forEach((item) => {
+        //            const checkbox = document.getElementById('select-' + item);
+        //            if (checkbox) {
+        //                checkbox.checked = true;
+        //                this.showSelectedItem(item);
+        //            }
+        //        });
+        //    }
+        //},
+        watch: {
+            filters(val) {
+                this.clearSelected();
+            },
+            excludeFilters(val) {
+                this.clearSelected();
+            }
+        }
+    });
+    /*products.component("manage-product-card", manageProductCard);*/
+    //products.component("modal-notification", modalNotification)
+    products.mount('#products');
+</script>
+
+<style>
+    .manageproducts-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 35px 10px 0;
+    }
+
+    .manageproductsfilters-wrapper {
+        position: sticky;
+        top: 1rem;
+        display: block;
+        max-height: 90vh;
+        width: 250px;
+        flex-shrink: 0;
+    }
+
+    .search-input-container {
+        position: relative;
+        width: 350px;
+        color: #262626;
+        padding: 10px 20px 10px 20px;
+        border: 1px solid #d8d8d8;
+        border-radius: 8px;
+    }
+
+    .search-input {
+        width: 295px;
+        border: none;
+    }
+
+        .search-input:focus {
+            outline: none;
+        }
+
+    .search-terms {
+        top: 15px;
+        position: absolute;
+        right: 15px;
+        display: block;
+        z-index: 10;
+        color: #cad4d8;
+    }
+
+    .btn-pd1 {
+        color: #fff;
+        background-color: #1a4363;
+        border-color: #1a4363;
+    }
+
+        .btn-pd1:hover {
+            color: #fff;
+            background-color: #25608d;
+            border-color: #1a4363;
+        }
+
+    .btn-outline-pd1 {
+        color: #1a4363;
+        border-color: #1a4363;
+    }
+
+        .btn-outline-pd1:hover {
+            color: #fff;
+            background-color: #1a4363;
+            border-color: #1a4363;
+        }
+
+    .btn-outline-pd2 {
+        color: #1a4363;
+        border-color: #1a4363;
+    }
+
+        .btn-outline-pd2:hover {
+            color: #1a4363;
+            background-color: #f7fbfe;
+            border-color: #1a4363;
+        }
+
+    .accordion-switch {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 1rem 1.25rem;
+        font-size: 1rem;
+        border-bottom: 1px solid rgba(0,0,0,.125);
+    }
+
+    .manageproducts-filter-bar {
+        border: 1px solid #d8d8d8;
+        border-radius: 16px;
+        padding: 5px 10px;
+        color: #6b7581;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        margin-right: 15px;
+        margin-bottom: 3px;
+        margin-top: 3px;
+        cursor: pointer;
+        background-color: #f7fbfe;
+        height: 32px;
+    }
+
+    .manageproduct-border {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .border-parent .manageproduct-border:last-child {
+        border-bottom: none;
+    }
+
+
+    .manageproducts-visible {
+        border: 1px solid #d8d8d8;
+        border-radius: 8px;
+        padding: 5px;
+        color: #4f5a64;
+        font-weight: bold;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f7fbfe;
+        height: 40px;
+        width: 100px;
+    }
+
+    .visible-hidden {
+        background-color: #e8e8e8;
+    }
+
+
+    .managepatients-actionbar {
+        width: 100%;
+        position: sticky;
+        bottom: 0;
+        z-index: 1;
+        background-color: #f7fbfe;
+        border: 1px #cbcbcb solid;
+        max-height: 150px;
+        overflow: auto;
+    }
+</style>

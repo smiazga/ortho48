@@ -1753,12 +1753,16 @@
     <Content Include="Content\main.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Global.asax" />
+    <Content Include="testhtml\cssgridexample.html" />
+    <Content Include="testhtml\draggablebottomsheetmodal.html" />
+    <Content Include="testhtml\flexboxexample.html" />
     <Content Include="testhtml\inputjsvalid.html" />
     <Content Include="testhtml\pd-colors-patients details.html" />
     <Content Include="testhtml\pd-colors-patients.html" />
     <Content Include="testhtml\pd-colors-table.html" />
     <Content Include="testhtml\pd-navmenu.html" />
     <Content Include="testhtml\popover-test.html" />
+    <Content Include="testhtml\sidenavbar.html" />
     <Content Include="testhtml\swtichtab-orders-colors.html" />
     <Content Include="testhtml\tablesort.html" />
     <Content Include="testhtml\switchtabtest.html" />
@@ -1906,8 +1910,15 @@
     <Content Include="VueComponents\ManagePatients\ManagePatientsView.cshtml" />
     <Content Include="VueComponents\ManagePatients\CreatePatient.cshtml" />
     <Content Include="VueComponents\ManagePatients\PatientDetails.cshtml" />
+    <Content Include="VueComponents\ManageProducts1\ManageProductsView.cshtml" />
+    <Content Include="VueComponents\ManageProducts1\ManageProductCard.cshtml" />
     <Content Include="VueComponents\ManageProducts\ManageProductsView.cshtml" />
     <Content Include="VueComponents\ManageProducts\ManageProductCard.cshtml" />
+    <Content Include="VueComponents\ManageProducts\SelectedItems.cshtml" />
+    <Content Include="VueComponents\ManageProducts\SideFilter.cshtml" />
+    <Content Include="VueComponents\ManageProducts\TopFilter.cshtml" />
+    <Content Include="VueComponents\ManageProducts\Products.cshtml" />
+    <Content Include="VueComponents\ManageProducts\SearchFilter.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

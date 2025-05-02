@@ -1,30 +1,49 @@
-<script type="text/x-template" id="manage-product-card-template">
+﻿<script type="text/x-template" id="manage-product-card-template">
+    <div>
 
-        <div class="d-flex justify-content-between align-items-center py-2 manageproduct-border">
-            <div class="">
-                <input type="checkbox" :id="'select-' + product.Id" :value="product.Id" @@input="emitUpdate($event, productId)" />
-            </div>
-            <div class="w-25">
-                <div><img :src="product.ImageUrl" alt="" width="190" height="190" /></div>
-            </div>
-            <div class=" w-100 p-3">
-                <div>{{ product.Name}}</div>
-                <div>{{ product.MainCategories }}</div>
-            </div>
-            <div class="w-50">
-                <div>60 CT: $5.50</div>
-                <div>90 CT: $8.25</div>
-                <div>120 CT: $11.00</div>
-            </div>
-            <div class="adjustcolumn w-25">
-                <div class="manageproducts-visible" :class="{hidden: isChecked}">{{ showVisibilityText }}</div>
-            </div>
+        <div class="border-parent">
+            <template v-if="filteredAndSortedProducts.length === 0">
+                No products found. Try chaning the filters or clearing the search.
+            </template>
+            <template v-else v-for="product in filteredAndSortedProducts" :key="product.ProductId">
+                <div class="d-flex justify-content-between align-items-center py-2 manageproduct-border">
+                    <div class="">
+                        <input type="checkbox" :id="'select-' + product.ProductId" :value="product.ProductId" v-model="selectedItems" />
+                    </div>
+                    <div class="w-25">
+                        <div><img :src="product.ImageUrl" alt="" width="190" height="190" /></div>
+                    </div>
+                    <div class=" w-100 p-3">
+                        <div>{{ product.Name}}</div>
+                        <div>{{ product.MainCategories }}</div>
+                    </div>
+                    <div class="w-50">
+                        <template v-for="item in product.SizePriceList">
+                            <div>{{ item}}</div>
+                        </template>
+                    </div>
+                    <div class="adjustcolumn w-25">
+                        <div v-if="product.Hidden">
+                            <div class="manageproducts-visible visible-hidden">Hidden</div>
+                        </div>
+                        <div v-else>
+                            <div class="manageproducts-visible">Visible</div>
+                        </div>
+                    </div>
+                </div>
+            </template>
         </div>
+
+
+
+
+
+    </div>
 </script>
 
 <script type="text/javascript">
     const manageProductCard = {
-        template:'#manage-product-card-template',
+        template: '#manage-product-card-template',
         props: {
             product: {
                 type: Object,
@@ -33,33 +52,8 @@
         },
         data() {
             return {
-                isChecked:false
+                Products:[]
             }
-        },
-        computed: {
-            showVisibilityText() {
-                if (this.isChecked) {
-                    return "Hidden";
-                } else {
-                    return "Visible";
-                }
-            }
-        },
-        methods: {
-            emitUpdate($event, productId) {
-                var checkbox = $event.target;
-                this.isChecked = checkbox.checked;
-                this.$emit('update-item', productId);
-            },
-        }   
+        }
     }
 </script>
-
-<style>
-    .adjustcolumn {
-        flex: 1;
-        padding: 10px;
-        text-align: start;
-    }
-
-</style>
