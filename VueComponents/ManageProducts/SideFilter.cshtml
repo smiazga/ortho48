@@ -1,7 +1,7 @@
 ﻿<div class="accordion accordion-flush" id="accordionCategoryFilters">
     <template v-for="(f,index) in setProductFilters" :key="index">
         <div class="accordion-item">
-            <h2 class="accordion-header" id="'heading_' + index">
+            <h2 class="accordion-header" :id="'heading_' + index">
                 <template v-if="f.category == 'InStock'">
                     <template v-for="(filter, index) in FiltersData?.find((g) => g.CategoryName == f.category)?.FilterValues" :key="index">
                         <div class="accordion-switch">
@@ -18,7 +18,7 @@
                     </button>
                 </template>
             </h2>
-            <div :id="'collapse-' + index" class="accordion-collapse collapse" aria-labelledby="'heading_' + index" data-bs-parent="#accordionCategoryFilters">
+            <div :id="'collapse-' + index" class="accordion-collapse collapse" :aria-labelledby="'heading_' + index" data-bs-parent="#accordionCategoryFilters">
                 <div class="accordion-body">
                     <template v-if="f.category == 'Ingredients'">
                         <input type="text" v-model="ingredientSearch" placeholder="Type at least 3 letters" class="product-filters-item-search">
